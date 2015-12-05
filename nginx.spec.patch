@@ -1,14 +1,6 @@
 --- nginx.spec.orig	2015-11-18 00:07:19.000000000 +0900
-+++ nginx.spec	2015-12-05 18:08:46.577000000 +0900
-@@ -61,6 +61,7 @@
- Version: 1.9.7
- Release: 1%{?dist}.ngx
- Vendor: nginx inc.
-+Packager: Hiroaki Nakamura https://github.com/hnakamur/nginx-rpm
- URL: http://nginx.org/
- 
- Source0: http://nginx.org/download/%{name}-%{version}.tar.gz
-@@ -74,11 +75,16 @@
++++ nginx.spec	2015-12-05 23:19:11.095000000 +0900
+@@ -74,11 +74,16 @@
  Source9: nginx.upgrade.sh
  Source10: nginx.suse.logrotate
  
@@ -25,7 +17,7 @@
  
  Provides: webserver
  
-@@ -98,7 +104,7 @@
+@@ -98,7 +103,7 @@
  %endif
  
  %prep
@@ -34,7 +26,7 @@
  
  %build
  ./configure \
-@@ -136,6 +142,9 @@
+@@ -136,6 +141,9 @@
          --with-mail_ssl_module \
          --with-file-aio \
          --with-ipv6 \
@@ -44,7 +36,7 @@
          --with-debug \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-@@ -178,6 +187,9 @@
+@@ -178,6 +186,9 @@
          --with-mail_ssl_module \
          --with-file-aio \
          --with-ipv6 \
