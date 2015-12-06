@@ -1,5 +1,5 @@
 --- nginx.spec.orig	2015-11-18 00:07:19.000000000 +0900
-+++ nginx.spec	2015-12-05 23:19:11.095000000 +0900
++++ nginx.spec	2015-12-06 17:51:40.000000000 +0900
 @@ -74,11 +74,16 @@
  Source9: nginx.upgrade.sh
  Source10: nginx.suse.logrotate
@@ -17,16 +17,17 @@
  
  Provides: webserver
  
-@@ -98,7 +103,7 @@
+@@ -98,7 +103,8 @@
  %endif
  
  %prep
 -%setup -q
 +%setup -q -a 100 -a 101 -a 102
++patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
  
  %build
  ./configure \
-@@ -136,6 +141,9 @@
+@@ -136,6 +142,9 @@
          --with-mail_ssl_module \
          --with-file-aio \
          --with-ipv6 \
@@ -36,7 +37,7 @@
          --with-debug \
          %{?with_http2:--with-http_v2_module} \
          --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
-@@ -178,6 +186,9 @@
+@@ -178,6 +187,9 @@
          --with-mail_ssl_module \
          --with-file-aio \
          --with-ipv6 \
