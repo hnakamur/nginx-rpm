@@ -62,32 +62,33 @@ build_rpm_with_mock() {
 build_rpm_on_copr() {
   build_srpm
 
-  mkdir -p $HOME/.config
-  cat > $HOME/.config/copr <<EOF
-[copr-cli]
-login = ${COPR_LOGIN}
-username = ${COPR_USERNAME}
-token = ${COPR_TOKEN}
-copr_url = https://copr.fedoraproject.org
-EOF
-
+  # Check the project is already created on copr.
   status=`curl -s -o /dev/null -w "%{http_code}" https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${project_name}/detail/`
   if [ $status = "404" ]; then
-    # NOTE: Edit description. You may or may not need to edit instructions.
-    copr-cli create --chroot ${mock_chroot} \
-    --description 'HEAD version of Varnish High-performance HTTP accelerator' \
-    --instructions \
-"\`\`\`
+    # Create the project on copr.
+    # We call copr APIs with curl to work around the InsecurePlatformWarning problem
+    # since system python in CentOS 7 is old.
+    # I read the source code of https://pypi.python.org/pypi/copr/1.62.1
+    # since the API document at https://copr.fedoraproject.org/api/ is old.
+    #
+    # NOTE: Edit description here. You may or may not need to edit instructions.
+    curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
+      --data-urlencode "name=${project_name}" --data-urlencode "${mock_chroot}=y" \
+      --data-urlencode "description=HEAD version of Varnish High-performance HTTP accelerator" \
+      --data-urlencode "instructions=\`\`\`
 sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${project_name}/repo/epel-7/${COPR_USERNAME}-${project_name}-epel-7.repo
 \`\`\`
 
 \`\`\`
 sudo yum install ${rpm_name}
 \`\`\`" \
-${project_name}
+      https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/new/
   fi
-  copr-cli build --nowait ${project_name} "${topdir}/SRPMS/${srpm_file}"
-  rm $HOME/.config/copr
+  # Add a new build on copr with uploading a srpm file.
+  curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
+    -F "${mock_chroot}=y" \
+    -F "pkgs=@${topdir}/SRPMS/${srpm_file};type=application/x-rpm" \
+    https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${project_name}/new_build_upload/
 }
 
 case "${1:-}" in
