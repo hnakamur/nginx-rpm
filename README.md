@@ -1,7 +1,7 @@
 nginx-rpm
 =========
 
-A Dockerfile to build [nginx](http://nginx.org/) rpm for CentOS7 using [Travis CI](https://travis-ci.org/) and [fedora copr](https://copr.fedoraproject.org/).
+A Dockerfile to build [nginx](http://nginx.org/) rpm for CentOS7 using [fedora copr](https://copr.fedoraproject.org/).
 
 This build includes the following modules:
 
