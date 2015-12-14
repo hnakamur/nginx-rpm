@@ -36,48 +36,27 @@ EOF
 }
 
 topdir=`rpm --eval '%{_topdir}'`
-topdir_in_chroot=/builddir/build
 
 download_source_files() {
-  # NOTE: Edit commands here.
-  cd ${topdir}/SOURCES
-  nginx_tarball_file=nginx-${version}.tar.gz
-  if [ ! -f ${nginx_tarball_file} ]; then
-    curl -sLO http://nginx.org/download/${nginx_tarball_file}
-  fi
-
-  ngx_lua_tarball_file=lua-nginx-module-${ngx_lua_version}.tar.gz
-  if [ ! -f ${ngx_lua_tarball_file} ]; then
-    curl -sLO https://github.com/openresty/lua-nginx-module/archive/v${ngx_lua_version}.tar.gz#/${ngx_lua_tarball_file}
-  fi
-
-  nginx_upstream_check_module_tarball_file=nginx_upstream_check_module-master.tar.gz
-  if [ ! -f ${nginx_upstream_check_module_tarball_file} ]; then
-    curl -sLO https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/${nginx_upstream_check_module_tarball_file}
-  fi
-
-  ngx_http_consistent_hash_tarball_file=ngx_http_consistent_hash-master.tar.gz
-  if [ ! -f ${ngx_http_consistent_hash_tarball_file} ]; then
-    curl -sLO https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/${ngx_http_consistent_hash_tarball_file}
-  fi
+  source_urls=`rpmspec -P ${topdir}/SPECS/${spec_file} | awk '/^Source[0-9]*:\s*http/ {print $2}'`
+  for source_url in $source_urls; do
+    source_file=${source_url##*/}
+    (cd ${topdir}/SOURCES && if [ ! -f ${source_file} ]; then curl -sLO ${source_url}; fi)
+  done
 }
 
 build_srpm() {
-  version=`rpmspec -P ${topdir}/SPECS/${spec_file} | awk '$1=="Version:" { print $2 }'`
-  ngx_lua_version=`awk '/^%define ngx_lua_version/ { print $3 }' ${topdir}/SPECS/${spec_file}`
   download_source_files
-  /usr/bin/mock -r ${mock_chroot} --init
-  /usr/bin/mock -r ${mock_chroot} --no-clean --buildsrpm --spec "${topdir}/SPECS/${spec_file}" --sources "${topdir}/SOURCES/"
-  release=`/usr/bin/mock -r ${mock_chroot} --chroot "rpmspec -P ${topdir_in_chroot}/SPECS/${spec_file}" | awk '$1=="Release:" { print $2 }'`
+  rpmbuild -bs "${topdir}/SPECS/${spec_file}"
+  version=`rpmspec -P ${topdir}/SPECS/${spec_file} | awk '$1=="Version:" { print $2 }'`
+  release=`rpmspec -P ${topdir}/SPECS/${spec_file} | awk '$1=="Release:" { print $2 }'`
   rpm_version_release=${version}-${release}
   srpm_file=${rpm_name}-${rpm_version_release}.src.rpm
-  mock_result_dir=/var/lib/mock/${mock_chroot}/result
-  cp ${mock_result_dir}/${srpm_file} ${topdir}/SRPMS/
 }
 
 build_rpm_with_mock() {
   build_srpm
-  /usr/bin/mock -r ${mock_chroot} --no-clean --rebuild ${topdir}/SRPMS/${srpm_file}
+  /usr/bin/mock -r ${mock_chroot} --rebuild ${topdir}/SRPMS/${srpm_file}
 
   mock_result_dir=/var/lib/mock/${mock_chroot}/result
   if [ -n "`find ${mock_result_dir} -maxdepth 1 -name \"${rpm_name}-*${rpm_version_release}.${arch}.rpm\" -print -quit`" ]; then
@@ -101,8 +80,6 @@ build_rpm_on_copr() {
     # since system python in CentOS 7 is old.
     # I read the source code of https://pypi.python.org/pypi/copr/1.62.1
     # since the API document at https://copr.fedoraproject.org/api/ is old.
-    #
-    # NOTE: Edit description here. You may or may not need to edit instructions.
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
       --data-urlencode "name=${project_name}" \
       --data-urlencode "${mock_chroot}=y" \
