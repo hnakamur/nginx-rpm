@@ -9,6 +9,21 @@ arch=x86_64
 spec_file=${rpm_name}.spec
 mock_chroot=epel-7-${arch}
 
+copr_project_description="[nginx](http://nginx.org/) is a high performance web server. This rpm is built with consistent hash, upstream check and lua modules.
+
+* [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
+* [yaoweibin/nginx_upstream_check_module](https://github.com/yaoweibin/nginx_upstream_check_module)
+* [replay/ngx_http_consistent_hash](https://github.com/replay/ngx_http_consistent_hash)
+"
+
+copr_project_instructions="\`\`\`
+sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${project_name}/repo/epel-7/${COPR_USERNAME}-${project_name}-epel-7.repo
+\`\`\`
+
+\`\`\`
+sudo yum install ${rpm_name}
+\`\`\`"
+
 usage() {
   cat <<'EOF' 1>&2
 Usage: build.sh subcommand
@@ -89,20 +104,10 @@ build_rpm_on_copr() {
     #
     # NOTE: Edit description here. You may or may not need to edit instructions.
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
-      --data-urlencode "name=${project_name}" --data-urlencode "${mock_chroot}=y" \
-      --data-urlencode "description=[nginx](http://nginx.org/) is a high performance web server. This rpm is built with consistent hash, upstream check and lua modules.
-
-* [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
-* [yaoweibin/nginx_upstream_check_module](https://github.com/yaoweibin/nginx_upstream_check_module)
-* [replay/ngx_http_consistent_hash](https://github.com/replay/ngx_http_consistent_hash)
-" \
-      --data-urlencode "instructions=\`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${project_name}/repo/epel-7/${COPR_USERNAME}-${project_name}-epel-7.repo
-\`\`\`
-
-\`\`\`
-sudo yum install ${rpm_name}
-\`\`\`" \
+      --data-urlencode "name=${project_name}" \
+      --data-urlencode "${mock_chroot}=y" \
+      --data-urlencode "description=$copr_project_description" \
+      --data-urlencode "instructions=$copr_project_instructions" \
       https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/new/
   fi
   # Add a new build on copr with uploading a srpm file.
