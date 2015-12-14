@@ -1,14 +1,7 @@
 #!/bin/bash -x
 set -eu
 
-# NOTE: Edit project_name and rpm_name.
-project_name=nginx
-rpm_name=nginx
-arch=x86_64
-
-spec_file=${rpm_name}.spec
-mock_chroot=epel-7-${arch}
-
+copr_project_name=nginx
 copr_project_description="[nginx](http://nginx.org/) is a high performance web server. This rpm is built with consistent hash, upstream check and lua modules.
 
 * [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
@@ -17,12 +10,19 @@ copr_project_description="[nginx](http://nginx.org/) is a high performance web s
 "
 
 copr_project_instructions="\`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${project_name}/repo/epel-7/${COPR_USERNAME}-${project_name}-epel-7.repo
+sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${copr_project_name}/repo/epel-7/${COPR_USERNAME}-${copr_project_name}-epel-7.repo
 \`\`\`
 
 \`\`\`
 sudo yum install ${rpm_name}
 \`\`\`"
+
+rpm_name=nginx
+arch=x86_64
+
+spec_file=${rpm_name}.spec
+mock_chroot=epel-7-${arch}
+
 
 usage() {
   cat <<'EOF' 1>&2
@@ -73,7 +73,7 @@ build_rpm_on_copr() {
   build_srpm
 
   # Check the project is already created on copr.
-  status=`curl -s -o /dev/null -w "%{http_code}" https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${project_name}/detail/`
+  status=`curl -s -o /dev/null -w "%{http_code}" https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/detail/`
   if [ $status = "404" ]; then
     # Create the project on copr.
     # We call copr APIs with curl to work around the InsecurePlatformWarning problem
@@ -81,7 +81,7 @@ build_rpm_on_copr() {
     # I read the source code of https://pypi.python.org/pypi/copr/1.62.1
     # since the API document at https://copr.fedoraproject.org/api/ is old.
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
-      --data-urlencode "name=${project_name}" \
+      --data-urlencode "name=${copr_project_name}" \
       --data-urlencode "${mock_chroot}=y" \
       --data-urlencode "description=$copr_project_description" \
       --data-urlencode "instructions=$copr_project_instructions" \
@@ -91,7 +91,7 @@ build_rpm_on_copr() {
   curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
     -F "${mock_chroot}=y" \
     -F "pkgs=@${topdir}/SRPMS/${srpm_file};type=application/x-rpm" \
-    https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${project_name}/new_build_upload/
+    https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/new_build_upload/
 }
 
 case "${1:-}" in
