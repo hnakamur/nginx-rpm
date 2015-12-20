@@ -2,6 +2,9 @@
 set -eu
 
 copr_project_name=nginx
+rpm_name=nginx
+arch=x86_64
+
 copr_project_description="[nginx](http://nginx.org/) is a high performance web server. This rpm is built with consistent hash, upstream check and lua modules.
 
 * [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
@@ -16,9 +19,6 @@ sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo htt
 \`\`\`
 sudo yum install ${rpm_name}
 \`\`\`"
-
-rpm_name=nginx
-arch=x86_64
 
 spec_file=${rpm_name}.spec
 mock_chroot=epel-7-${arch}
