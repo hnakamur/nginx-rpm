@@ -21,8 +21,7 @@ sudo yum install ${rpm_name}
 \`\`\`"
 
 spec_file=${rpm_name}.spec
-mock_chroot=epel-7-${arch}
-
+mock_chroots="epel-6-${arch} epel-7-${arch}"
 
 usage() {
   cat <<'EOF' 1>&2
@@ -56,17 +55,19 @@ build_srpm() {
 
 build_rpm_with_mock() {
   build_srpm
-  /usr/bin/mock -r ${mock_chroot} --rebuild ${topdir}/SRPMS/${srpm_file}
+  for mock_chroot in $mock_chroots; do
+    /usr/bin/mock -r ${mock_chroot} --rebuild ${topdir}/SRPMS/${srpm_file}
 
-  mock_result_dir=/var/lib/mock/${mock_chroot}/result
-  if [ -n "`find ${mock_result_dir} -maxdepth 1 -name \"${rpm_name}-*${rpm_version_release}.${arch}.rpm\" -print -quit`" ]; then
-    mkdir -p ${topdir}/RPMS/${arch}
-    cp ${mock_result_dir}/${rpm_name}-*${rpm_version_release}.${arch}.rpm ${topdir}/RPMS/${arch}/
-  fi
-  if [ -n "`find ${mock_result_dir} -maxdepth 1 -name \"${rpm_name}-*${rpm_version_release}.noarch.rpm\" -print -quit`" ]; then
-    mkdir -p ${topdir}/RPMS/noarch
-    cp ${mock_result_dir}/${rpm_name}-*${rpm_version_release}.noarch.rpm ${topdir}/RPMS/noarch/
-  fi
+    mock_result_dir=/var/lib/mock/${mock_chroot}/result
+    if [ -n "`find ${mock_result_dir} -maxdepth 1 -name \"${rpm_name}-*${version}-*.${arch}.rpm\" -print -quit`" ]; then
+      mkdir -p ${topdir}/RPMS/${arch}
+      cp ${mock_result_dir}/${rpm_name}-*${version}-*.${arch}.rpm ${topdir}/RPMS/${arch}/
+    fi
+    if [ -n "`find ${mock_result_dir} -maxdepth 1 -name \"${rpm_name}-*${version}-*.noarch.rpm\" -print -quit`" ]; then
+      mkdir -p ${topdir}/RPMS/noarch
+      cp ${mock_result_dir}/${rpm_name}-*${version}-*.noarch.rpm ${topdir}/RPMS/noarch/
+    fi
+  done
 }
 
 build_rpm_on_copr() {
@@ -80,16 +81,24 @@ build_rpm_on_copr() {
     # since system python in CentOS 7 is old.
     # I read the source code of https://pypi.python.org/pypi/copr/1.62.1
     # since the API document at https://copr.fedoraproject.org/api/ is old.
+    chroot_opts=''
+    for mock_chroot in $mock_chroots; do
+      chroot_opts="$chroot_opts --data-urlencode ${mock_chroot}=y"
+    done
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
       --data-urlencode "name=${copr_project_name}" \
-      --data-urlencode "${mock_chroot}=y" \
-      --data-urlencode "description=$copr_project_description" \
-      --data-urlencode "instructions=$copr_project_instructions" \
+      $chroot_opts \
+      --data-urlencode "description=${copr_project_description}" \
+      --data-urlencode "instructions=${copr_project_instructions}" \
       https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/new/
   fi
   # Add a new build on copr with uploading a srpm file.
+  chroot_opts=''
+  for mock_chroot in $mock_chroots; do
+    chroot_opts="$chroot_opts -F ${mock_chroot}=y"
+  done
   curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
-    -F "${mock_chroot}=y" \
+    $chroot_opts \
     -F "pkgs=@${topdir}/SRPMS/${srpm_file};type=application/x-rpm" \
     https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/new_build_upload/
 }
