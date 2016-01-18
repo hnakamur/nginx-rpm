@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.9.19
+%define ngx_lua_version 0.10.0
 
 # distribution specific definitions
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
@@ -366,6 +366,7 @@ fi
 %changelog
 * Mon Jan 18 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.9-3
 - Remove nginx_upstream_check_module and ngx_http_consistent_hash
+- Update ngx_lua_version to 0.10.0
 
 * Sun Dec 13 2015 Hiroaki Nakamura <hnakamur@gmail.com>
 - Add lua-nginx-module, nginx_upstream_check_module and ngx_http_consistent_hash
