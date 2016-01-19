@@ -54,7 +54,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.9.9
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -72,6 +72,7 @@ Source11: nginx-debug.service
 Source12: COPYRIGHT
 
 Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
+Source101: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
 
 License: 2-clause BSD-like license
 
@@ -91,7 +92,8 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100
+%setup -q -a 100 -a 101
+patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -136,6 +138,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-file-aio \
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-module=./nginx_upstream_check_module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -180,6 +183,7 @@ make %{?_smp_mflags}
         --with-file-aio \
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-module=./nginx_upstream_check_module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -364,6 +368,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Jan 19 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.9-4
+- Add nginx_upstream_check_module again
+
 * Mon Jan 18 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.9-3
 - Remove nginx_upstream_check_module and ngx_http_consistent_hash
 - Update ngx_lua_version to 0.10.0
