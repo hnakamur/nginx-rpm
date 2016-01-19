@@ -21,7 +21,8 @@ sudo yum install ${rpm_name}
 \`\`\`"
 
 spec_file=${rpm_name}.spec
-mock_chroots="epel-6-${arch} epel-7-${arch}"
+#mock_chroots="epel-6-${arch} epel-7-${arch}"
+mock_chroots="epel-7-${arch}"
 
 usage() {
   cat <<'EOF' 1>&2
