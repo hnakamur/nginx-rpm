@@ -99,6 +99,7 @@ build_rpm_on_copr() {
     chroot_opts="$chroot_opts -F ${mock_chroot}=y"
   done
   curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
+    -H "Expect:" \
     $chroot_opts \
     -F "pkgs=@${topdir}/SRPMS/${srpm_file};type=application/x-rpm" \
     https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/${copr_project_name}/new_build_upload/
