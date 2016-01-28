@@ -26,7 +26,7 @@ To build the docker image to build the srpm or rpm files, run the following comm
 ./docker_wrapper.sh build
 ```
 
-### Build rpms interactively
+### Build rpms using mock on a docker container
 
 To try building rpm files with mock, run the following command.
 
