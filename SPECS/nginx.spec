@@ -5,6 +5,7 @@
 %define nginx_loggroup adm
 
 %define ngx_lua_version 0.10.0
+%define ngx_sorted_query_string_version 0.2
 
 # distribution specific definitions
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
@@ -73,6 +74,7 @@ Source12: COPYRIGHT
 
 Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
 Source101: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
+Source102: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
 
 License: 2-clause BSD-like license
 
@@ -92,7 +94,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101
+%setup -q -a 100 -a 101 -a 102
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -139,6 +141,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
         --add-module=./nginx_upstream_check_module-master \
+        --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -184,6 +187,7 @@ make %{?_smp_mflags}
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
         --add-module=./nginx_upstream_check_module-master \
+        --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -368,6 +372,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Thu Jan 28 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-2
+- Add nginx-sorted-querystring-module
+
 * Wed Jan 27 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-1
 - 1.9.10
 
