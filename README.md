@@ -7,6 +7,7 @@ This build includes the following modules:
 
 * [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
 * [yaoweibin/nginx_upstream_check_module](https://github.com/yaoweibin/nginx_upstream_check_module)
+* [wandenberg/nginx-sorted-querystring-module](https://github.com/wandenberg/nginx-sorted-querystring-module)
 * [replay/ngx_http_consistent_hash](https://github.com/replay/ngx_http_consistent_hash)
 
 ## Setup
