@@ -55,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.9.10
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -73,9 +73,14 @@ Source11: nginx-debug.service
 Source12: COPYRIGHT
 
 Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
-Source101: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
-Source102: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
-Source103: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
+Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
+Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
+Source103: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
+Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
+Source105: https://github.com/arut/nginx-rtmp-module/archive/master.tar.gz#/nginx-rtmp-module-master.tar.gz
+Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx_cache_purge-master.tar.gz
+Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
+Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
 
 License: 2-clause BSD-like license
 
@@ -83,6 +88,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: zlib-devel
 BuildRequires: pcre-devel
 BuildRequires: luajit-devel
+BuildRequires: mhash-devel
 
 Provides: webserver
 
@@ -95,7 +101,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -141,9 +147,14 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-file-aio \
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-module=./lua-upstream-cache-nginx-module-master \
+        --add-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
+        --add-module=./nginx-rtmp-module-master \
+        --add-module=./ngx_cache_purge-master \
         --add-module=./ngx_http_consistent_hash-master \
+        --add-module=./ngx_http_secure_download-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -188,9 +199,14 @@ make %{?_smp_mflags}
         --with-file-aio \
         --with-ipv6 \
         --add-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-module=./lua-upstream-cache-nginx-module-master \
+        --add-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
+        --add-module=./nginx-rtmp-module-master \
+        --add-module=./ngx_cache_purge-master \
         --add-module=./ngx_http_consistent_hash-master \
+        --add-module=./ngx_http_secure_download-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -375,6 +391,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Jan 29 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-4
+- Add ngx_http_secure_download, nginx-rtmp-module, headers-more-nginx-module,
+  lua-nginx-cache-module and ngx_cache_purge modules
+
 * Thu Jan 28 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-3
 - Add ngx_http_consistent_hash again
 
