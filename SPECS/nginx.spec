@@ -54,8 +54,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.10
-Release: 4%{?dist}.ngx
+Version: 1.9.11
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -391,6 +391,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Feb 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
+- 1.9.11
+
 * Fri Jan 29 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-4
 - Add ngx_http_secure_download, nginx-rtmp-module, headers-more-nginx-module,
   lua-nginx-cache-module and ngx_cache_purge modules
