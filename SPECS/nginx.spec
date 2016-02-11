@@ -85,6 +85,7 @@ Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
 Patch106: ngx_cache_purge.dynamic-module.patch
+Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
 
 License: 2-clause BSD-like license
@@ -110,6 +111,7 @@ a mail proxy server.
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch106 -d ./ngx_cache_purge-master -p1
+%patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
@@ -163,7 +165,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         --add-module=./nginx-rtmp-module-master \
         --add-dynamic-module=./ngx_cache_purge-master \
-        --add-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
@@ -216,7 +218,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         --add-module=./nginx-rtmp-module-master \
         --add-dynamic-module=./ngx_cache_purge-master \
-        --add-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -412,7 +414,8 @@ fi
 %changelog
 * Fri Feb 12 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
 - Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
-- Build cache_purge, headers-more, http_consistent_hash, lua-upstream-cache and sorted-querystring as dynamic modules
+- Build cache_purge, headers-more, http_consistent_hash, http_secure_download,
+  lua-upstream-cache and sorted-querystring as dynamic modules
 
 * Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
 - 1.9.11
