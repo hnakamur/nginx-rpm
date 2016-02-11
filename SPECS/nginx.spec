@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.1rc0
+%define ngx_lua_commit 4f2954302ce642a6f17255cff294663aa6552d8d
 %define ngx_sorted_query_string_version 0.2
 
 # distribution specific definitions
@@ -72,7 +72,7 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
+Source100: https://github.com/openresty/lua-nginx-module/archive/%{ngx_lua_commit}.tar.gz#/lua-nginx-module-%{ngx_lua_commit}.tar.gz 
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
 Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
 Source103: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
@@ -81,6 +81,8 @@ Source105: https://github.com/arut/nginx-rtmp-module/archive/master.tar.gz#/ngin
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx_cache_purge-master.tar.gz
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
+
+Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 
 License: 2-clause BSD-like license
 
@@ -102,6 +104,7 @@ a mail proxy server.
 
 %prep
 %setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108
+%patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -147,9 +150,9 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-module=./lua-nginx-module-%{ngx_lua_version} \
-        --add-module=./lua-upstream-cache-nginx-module-master \
-        --add-module=./headers-more-nginx-module-master \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
+        --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         --add-module=./nginx-rtmp-module-master \
@@ -200,9 +203,9 @@ make %{?_smp_mflags}
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-module=./lua-nginx-module-%{ngx_lua_version} \
-        --add-module=./lua-upstream-cache-nginx-module-master \
-        --add-module=./headers-more-nginx-module-master \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
+        --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
         --add-module=./nginx-rtmp-module-master \
@@ -401,6 +404,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Feb 12 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
+- Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
+- Build lua-upstream-cache and headers-more as dynamic modules
+
 * Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
 - 1.9.11
 - Update ngx_lua_version to 0.10.1rc0
