@@ -113,6 +113,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
+        --modules-path=%{_libdir}/nginx/modules \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -139,10 +140,10 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
         --with-threads \
-        --with-stream \
+        --with-stream=dynamic \
         --with-stream_ssl_module \
         --with-http_slice_module \
-        --with-mail \
+        --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
@@ -165,6 +166,7 @@ make %{?_smp_mflags}
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
+        --modules-path=%{_libdir}/nginx/modules \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -191,10 +193,10 @@ make %{?_smp_mflags}
         --with-http_stub_status_module \
         --with-http_auth_request_module \
         --with-threads \
-        --with-stream \
+        --with-stream=dynamic \
         --with-stream_ssl_module \
         --with-http_slice_module \
-        --with-mail \
+        --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
@@ -225,6 +227,10 @@ make %{?_smp_mflags}
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/log/nginx
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/run/nginx
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/cache/nginx
+
+%{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
+cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+    %{__ln_s} ../..%{_libdir}/nginx/modules modules && cd -
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 %{__install} -m 644 -p %{SOURCE12} \
@@ -284,6 +290,7 @@ make %{?_smp_mflags}
 
 %dir %{_sysconfdir}/nginx
 %dir %{_sysconfdir}/nginx/conf.d
+%{_sysconfdir}/nginx/modules
 
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf
@@ -308,6 +315,9 @@ make %{?_smp_mflags}
 %{_initrddir}/nginx-debug
 %endif
 
+%attr(0755,root,root) %dir %{_libdir}/nginx
+%attr(0755,root,root) %dir %{_libdir}/nginx/modules
+%attr(0755,root,root) %{_libdir}/nginx/modules/*.so
 %dir %{_datadir}/nginx
 %dir %{_datadir}/nginx/html
 %{_datadir}/nginx/html/*
@@ -393,6 +403,8 @@ fi
 %changelog
 * Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
 - 1.9.11
+- Update ngx_lua_version to 0.10.1rc0
+- dynamic modules path and symlink in %{_sysconfdir}/nginx added
 
 * Fri Jan 29 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-4
 - Add ngx_http_secure_download, nginx-rtmp-module, headers-more-nginx-module,
