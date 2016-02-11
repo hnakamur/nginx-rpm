@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.0
+%define ngx_lua_version 0.10.1rc0
 %define ngx_sorted_query_string_version 0.2
 
 # distribution specific definitions
@@ -391,7 +391,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Wed Feb 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
+* Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
 - 1.9.11
 
 * Fri Jan 29 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-4
