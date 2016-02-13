@@ -94,6 +94,10 @@ License: 2-clause BSD-like license
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: zlib-devel
 BuildRequires: pcre-devel
+BuildRequires: libxml2-devel
+BuildRequires: libxslt-devel
+BuildRequires: gd-devel
+BuildRequires: GeoIP-devel
 BuildRequires: luajit-devel
 BuildRequires: mhash-devel
 
@@ -152,6 +156,9 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-http_secure_link_module \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
+        --with-http_xslt_module=dynamic \
+        --with-http_image_filter_module=dynamic \
+        --with-http_geoip_module=dynamic \
         --with-threads \
         --with-stream=dynamic \
         --with-stream_ssl_module \
@@ -205,6 +212,9 @@ make %{?_smp_mflags}
         --with-http_secure_link_module \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
+        --with-http_xslt_module=dynamic \
+        --with-http_image_filter_module=dynamic \
+        --with-http_geoip_module=dynamic \
         --with-threads \
         --with-stream=dynamic \
         --with-stream_ssl_module \
@@ -416,6 +426,7 @@ fi
 %changelog
 * Sat Feb 13 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
 - Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
+- Build http_geoip, http_image_filter, and http_xslt as dynamic modules.
 - Build cache_purge, headers-more, http_consistent_hash, http_secure_download, rtmp,
   lua-upstream-cache and sorted-querystring as dynamic modules
 
