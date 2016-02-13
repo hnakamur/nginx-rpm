@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.0
+%define ngx_lua_commit 4f2954302ce642a6f17255cff294663aa6552d8d
 %define ngx_sorted_query_string_version 0.2
 
 # distribution specific definitions
@@ -54,8 +54,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.10
-Release: 4%{?dist}.ngx
+Version: 1.9.11
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -72,7 +72,7 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
+Source100: https://github.com/openresty/lua-nginx-module/archive/%{ngx_lua_commit}.tar.gz#/lua-nginx-module-%{ngx_lua_commit}.tar.gz 
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
 Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
 Source103: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
@@ -82,11 +82,22 @@ Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
 
+Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
+Patch104: nginx-sorted-querystring.dynamic-module.patch
+Patch105: nginx-rtmp.dynamic-module.patch
+Patch106: ngx_cache_purge.dynamic-module.patch
+Patch107: ngx_http_secure_download.dynamic-module.patch
+Patch108: ngx_http_consistent_hash.dynamic-module.patch
+
 License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: zlib-devel
 BuildRequires: pcre-devel
+BuildRequires: libxml2-devel
+BuildRequires: libxslt-devel
+BuildRequires: gd-devel
+BuildRequires: GeoIP-devel
 BuildRequires: luajit-devel
 BuildRequires: mhash-devel
 
@@ -102,6 +113,12 @@ a mail proxy server.
 
 %prep
 %setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108
+%patch102 -d ./lua-upstream-cache-nginx-module-master -p1
+%patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
+%patch105 -d ./nginx-rtmp-module-master -p1
+%patch106 -d ./ngx_cache_purge-master -p1
+%patch107 -d ./ngx_http_secure_download-master -p1
+%patch108 -d ./ngx_http_consistent_hash-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -113,6 +130,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
+        --modules-path=%{_libdir}/nginx/modules \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -138,23 +156,26 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-http_secure_link_module \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
+        --with-http_xslt_module=dynamic \
+        --with-http_image_filter_module=dynamic \
+        --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream \
+        --with-stream=dynamic \
         --with-stream_ssl_module \
         --with-http_slice_module \
-        --with-mail \
+        --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-module=./lua-nginx-module-%{ngx_lua_version} \
-        --add-module=./lua-upstream-cache-nginx-module-master \
-        --add-module=./headers-more-nginx-module-master \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
+        --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
-        --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-module=./nginx-rtmp-module-master \
-        --add-module=./ngx_cache_purge-master \
-        --add-module=./ngx_http_consistent_hash-master \
-        --add-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
+        --add-dynamic-module=./nginx-rtmp-module-master \
+        --add-dynamic-module=./ngx_cache_purge-master \
+        --add-dynamic-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./ngx_http_consistent_hash-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -165,6 +186,7 @@ make %{?_smp_mflags}
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
+        --modules-path=%{_libdir}/nginx/modules \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -190,23 +212,26 @@ make %{?_smp_mflags}
         --with-http_secure_link_module \
         --with-http_stub_status_module \
         --with-http_auth_request_module \
+        --with-http_xslt_module=dynamic \
+        --with-http_image_filter_module=dynamic \
+        --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream \
+        --with-stream=dynamic \
         --with-stream_ssl_module \
         --with-http_slice_module \
-        --with-mail \
+        --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-module=./lua-nginx-module-%{ngx_lua_version} \
-        --add-module=./lua-upstream-cache-nginx-module-master \
-        --add-module=./headers-more-nginx-module-master \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
+        --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
-        --add-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-module=./nginx-rtmp-module-master \
-        --add-module=./ngx_cache_purge-master \
-        --add-module=./ngx_http_consistent_hash-master \
-        --add-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
+        --add-dynamic-module=./nginx-rtmp-module-master \
+        --add-dynamic-module=./ngx_cache_purge-master \
+        --add-dynamic-module=./ngx_http_secure_download-master \
+        --add-dynamic-module=./ngx_http_consistent_hash-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -225,6 +250,10 @@ make %{?_smp_mflags}
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/log/nginx
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/run/nginx
 %{__mkdir} -p $RPM_BUILD_ROOT%{_localstatedir}/cache/nginx
+
+%{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
+cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+    %{__ln_s} ../..%{_libdir}/nginx/modules modules && cd -
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 %{__install} -m 644 -p %{SOURCE12} \
@@ -284,6 +313,7 @@ make %{?_smp_mflags}
 
 %dir %{_sysconfdir}/nginx
 %dir %{_sysconfdir}/nginx/conf.d
+%{_sysconfdir}/nginx/modules
 
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf
@@ -308,6 +338,9 @@ make %{?_smp_mflags}
 %{_initrddir}/nginx-debug
 %endif
 
+%attr(0755,root,root) %dir %{_libdir}/nginx
+%attr(0755,root,root) %dir %{_libdir}/nginx/modules
+%attr(0755,root,root) %{_libdir}/nginx/modules/*.so
 %dir %{_datadir}/nginx
 %dir %{_datadir}/nginx/html
 %{_datadir}/nginx/html/*
@@ -391,6 +424,17 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sat Feb 13 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
+- Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
+- Build http_geoip, http_image_filter, and http_xslt as dynamic modules.
+- Build cache_purge, headers-more, http_consistent_hash, http_secure_download, rtmp,
+  lua-upstream-cache and sorted-querystring as dynamic modules
+
+* Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
+- 1.9.11
+- Update ngx_lua_version to 0.10.1rc0
+- dynamic modules path and symlink in %{_sysconfdir}/nginx added
+
 * Fri Jan 29 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.10-4
 - Add ngx_http_secure_download, nginx-rtmp-module, headers-more-nginx-module,
   lua-nginx-cache-module and ngx_cache_purge modules
