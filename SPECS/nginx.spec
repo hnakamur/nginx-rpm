@@ -84,6 +84,7 @@ Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
+Patch105: nginx-rtmp.dynamic-module.patch
 Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
@@ -110,6 +111,7 @@ a mail proxy server.
 %setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
+%patch105 -d ./nginx-rtmp-module-master -p1
 %patch106 -d ./ngx_cache_purge-master -p1
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
@@ -163,7 +165,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-module=./nginx-rtmp-module-master \
+        --add-dynamic-module=./nginx-rtmp-module-master \
         --add-dynamic-module=./ngx_cache_purge-master \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
@@ -216,7 +218,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-module=./nginx-rtmp-module-master \
+        --add-dynamic-module=./nginx-rtmp-module-master \
         --add-dynamic-module=./ngx_cache_purge-master \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
@@ -412,9 +414,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Fri Feb 12 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
+* Sat Feb 13 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
 - Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
-- Build cache_purge, headers-more, http_consistent_hash, http_secure_download,
+- Build cache_purge, headers-more, http_consistent_hash, http_secure_download, rtmp,
   lua-upstream-cache and sorted-querystring as dynamic modules
 
 * Thu Feb 11 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-1
