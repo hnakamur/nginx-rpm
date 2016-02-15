@@ -55,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.9.11
-Release: 1%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -424,6 +424,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Feb 15 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-3
+- Fix ngx_addon_name of http_consistent_hash and http_secure_download
+
 * Sat Feb 13 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-2
 - Update ngx_lua_version to 4f2954302ce642a6f17255cff294663aa6552d8d and build it as a dynamic module
 - Build http_geoip, http_image_filter, and http_xslt as dynamic modules.
