@@ -91,6 +91,7 @@ Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
 Patch109: srcache.dynamic-module.patch
+Patch110: redis2.dynamic-module.patch
 
 License: 2-clause BSD-like license
 
@@ -123,6 +124,7 @@ a mail proxy server.
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
 %patch109 -d ./srcache-nginx-module-master -p1
+%patch110 -d ./redis2-nginx-module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -181,7 +183,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=srcache-nginx-module-master \
-        --add-module=redis2-nginx-module-master \
+        --add-dynamic-module=redis2-nginx-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -239,7 +241,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=srcache-nginx-module-master \
-        --add-module=redis2-nginx-module-master \
+        --add-dynamic-module=redis2-nginx-module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
