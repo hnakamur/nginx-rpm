@@ -84,6 +84,7 @@ Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar
 Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
 Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
 Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
+Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
@@ -94,6 +95,7 @@ Patch108: ngx_http_consistent_hash.dynamic-module.patch
 Patch109: srcache.dynamic-module.patch
 Patch110: redis2.dynamic-module.patch
 Patch111: memc.dynamic-module.patch
+Patch112: lua-upstream.dynamic-module.patch
 
 License: 2-clause BSD-like license
 
@@ -118,7 +120,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch105 -d ./nginx-rtmp-module-master -p1
@@ -128,6 +130,7 @@ a mail proxy server.
 %patch109 -d ./srcache-nginx-module-master -p1
 %patch110 -d ./redis2-nginx-module-master -p1
 %patch111 -d ./memc-nginx-module-master -p1
+%patch112 -d ./lua-upstream-nginx-module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -188,6 +191,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./srcache-nginx-module-master \
         --add-dynamic-module=./redis2-nginx-module-master \
         --add-dynamic-module=./memc-nginx-module-master \
+        --add-dynamic-module=./lua-upstream-nginx-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -247,6 +251,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./srcache-nginx-module-master \
         --add-dynamic-module=./redis2-nginx-module-master \
         --add-dynamic-module=./memc-nginx-module-master \
+        --add-dynamic-module=./lua-upstream-nginx-module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
