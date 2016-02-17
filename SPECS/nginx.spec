@@ -82,6 +82,7 @@ Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
 Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
+Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
@@ -114,7 +115,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch105 -d ./nginx-rtmp-module-master -p1
@@ -180,6 +181,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=srcache-nginx-module-master \
+        --add-module=redis2-nginx-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -237,6 +239,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=srcache-nginx-module-master \
+        --add-module=redis2-nginx-module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
