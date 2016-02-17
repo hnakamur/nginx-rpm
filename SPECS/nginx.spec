@@ -55,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.9.11
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -81,6 +81,7 @@ Source105: https://github.com/arut/nginx-rtmp-module/archive/master.tar.gz#/ngin
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx_cache_purge-master.tar.gz
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
+Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
@@ -112,7 +113,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch105 -d ./nginx-rtmp-module-master -p1
@@ -176,6 +177,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./ngx_cache_purge-master \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
+        --add-module=srcache-nginx-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -232,6 +234,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_cache_purge-master \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
+        --add-module=srcache-nginx-module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -424,6 +427,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Feb 17 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-4
+- Add openresty/srcache-nginx-module
+
 * Mon Feb 15 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-3
 - Fix ngx_addon_name of http_consistent_hash and http_secure_download
 
