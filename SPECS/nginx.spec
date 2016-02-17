@@ -448,7 +448,9 @@ fi
 
 %changelog
 * Wed Feb 17 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-4
-- Add openresty/srcache-nginx-module
+- Add openresty srcache-nginx-module, redis2-nginx-module,
+  memc-nginx-module lua-upstream-nginx-module and echo-nginx-module
+  modules
 
 * Mon Feb 15 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-3
 - Fix ngx_addon_name of http_consistent_hash and http_secure_download
