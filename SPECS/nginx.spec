@@ -98,7 +98,6 @@ Patch109: srcache.dynamic-module.patch
 Patch110: redis2.dynamic-module.patch
 Patch111: memc.dynamic-module.patch
 Patch112: lua-upstream.dynamic-module.patch
-Patch114: ngx_http_enhanced_memcached.dynamic-module.patch
 
 License: 2-clause BSD-like license
 
@@ -134,7 +133,6 @@ a mail proxy server.
 %patch110 -d ./redis2-nginx-module-master -p1
 %patch111 -d ./memc-nginx-module-master -p1
 %patch112 -d ./lua-upstream-nginx-module-master -p1
-%patch114 -d ./ngx_http_enhanced_memcached_module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
