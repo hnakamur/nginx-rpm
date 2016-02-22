@@ -55,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.9.11
-Release: 5%{?dist}.ngx
+Release: 6%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -87,6 +87,7 @@ Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#
 Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
 Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
+Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/nginx-dav-ext-module-master.tar.gz
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
@@ -98,6 +99,7 @@ Patch109: srcache.dynamic-module.patch
 Patch110: redis2.dynamic-module.patch
 Patch111: memc.dynamic-module.patch
 Patch112: lua-upstream.dynamic-module.patch
+Patch115: nginx-dav-ext.dynamic-module.patch
 
 License: 2-clause BSD-like license
 
@@ -110,6 +112,7 @@ BuildRequires: gd-devel
 BuildRequires: GeoIP-devel
 BuildRequires: luajit-devel
 BuildRequires: mhash-devel
+BuildRequires: expat-devel
 
 Provides: webserver
 
@@ -122,7 +125,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch105 -d ./nginx-rtmp-module-master -p1
@@ -133,6 +136,7 @@ a mail proxy server.
 %patch110 -d ./redis2-nginx-module-master -p1
 %patch111 -d ./memc-nginx-module-master -p1
 %patch112 -d ./lua-upstream-nginx-module-master -p1
+%patch115 -d ./nginx-dav-ext-module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -196,6 +200,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
+        --add-dynamic-module=./nginx-dav-ext-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
@@ -258,6 +263,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
+        --add-dynamic-module=./nginx-dav-ext-module-master \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
         $*
@@ -450,6 +456,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Feb 22 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-6
+- Add nginx-dav-ext-module
+
 * Wed Feb 17 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-5
 - Add ngx_http_enhanced_memcached_module
 
