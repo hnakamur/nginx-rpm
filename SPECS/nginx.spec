@@ -54,8 +54,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.11
-Release: 6%{?dist}.ngx
+Version: 1.9.12
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -456,6 +456,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Thu Feb 25 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.12-1
+- 1.9.12
+
 * Mon Feb 22 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.11-6
 - Add nginx-dav-ext-module
 
