@@ -96,7 +96,6 @@ Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
 Patch109: srcache.dynamic-module.patch
-Patch110: redis2.dynamic-module.patch
 Patch111: memc.dynamic-module.patch
 Patch112: lua-upstream.dynamic-module.patch
 Patch115: nginx-dav-ext.dynamic-module.patch
@@ -133,7 +132,6 @@ a mail proxy server.
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
 %patch109 -d ./srcache-nginx-module-master -p1
-%patch110 -d ./redis2-nginx-module-master -p1
 %patch111 -d ./memc-nginx-module-master -p1
 %patch112 -d ./lua-upstream-nginx-module-master -p1
 %patch115 -d ./nginx-dav-ext-module-master -p1
