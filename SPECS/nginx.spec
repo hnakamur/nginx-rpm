@@ -54,7 +54,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.12
+Version: 1.9.13
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -90,7 +90,6 @@ Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/n
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
-Patch105: nginx-rtmp.dynamic-module.patch
 Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
@@ -123,7 +122,6 @@ a mail proxy server.
 %setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
-%patch105 -d ./nginx-rtmp-module-master -p1
 %patch106 -d ./ngx_cache_purge-master -p1
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
@@ -445,6 +443,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Mar 30 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.13-1
+- 1.9.13
+- Delete patch to add dynamic module support for nginx-rtmp-module
+
 * Thu Feb 25 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.12-1
 - 1.9.12
 - Remove openresty srcache-nginx-module since it has severe compatiblity
