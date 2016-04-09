@@ -54,7 +54,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.13
+Version: 1.9.14
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -443,6 +443,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sat Apr  9 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.14-1
+- 1.9.14
+
 * Wed Mar 30 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.13-1
 - 1.9.13
 - Delete patch to add dynamic module support for nginx-rtmp-module
