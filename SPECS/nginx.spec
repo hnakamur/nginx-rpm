@@ -6,6 +6,7 @@
 
 %define ngx_lua_commit 4f2954302ce642a6f17255cff294663aa6552d8d
 %define ngx_sorted_query_string_version 0.2
+%define ngx_openssl_version 1.0.2h
 
 # distribution specific definitions
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
@@ -15,8 +16,6 @@ Group: System Environment/Daemons
 Requires(pre): shadow-utils
 Requires: initscripts >= 8.36
 Requires(post): chkconfig
-Requires: openssl
-BuildRequires: openssl-devel
 %endif
 
 %if 0%{?rhel}  == 6
@@ -24,8 +23,6 @@ Group: System Environment/Daemons
 Requires(pre): shadow-utils
 Requires: initscripts >= 8.36
 Requires(post): chkconfig
-Requires: openssl >= 1.0.1
-BuildRequires: openssl-devel >= 1.0.1
 %define with_http2 1
 %endif
 
@@ -33,16 +30,13 @@ BuildRequires: openssl-devel >= 1.0.1
 Group: System Environment/Daemons
 Requires(pre): shadow-utils
 Requires: systemd
-Requires: openssl >= 1.0.1
 BuildRequires: systemd
-BuildRequires: openssl-devel >= 1.0.1
 Epoch: 1
 %define with_http2 1
 %endif
 
 %if 0%{?suse_version} == 1315
 Group: Productivity/Networking/Web/Servers
-BuildRequires: libopenssl-devel
 BuildRequires: systemd
 Requires(pre): shadow
 Requires: systemd
@@ -55,7 +49,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.1
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -87,6 +81,8 @@ Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master
 Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
 Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/nginx-dav-ext-module-master.tar.gz
+
+Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz  
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch104: nginx-sorted-querystring.dynamic-module.patch
@@ -120,7 +116,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 120
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch106 -d ./ngx_cache_purge-master -p1
@@ -153,6 +149,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --user=%{nginx_user} \
         --group=%{nginx_group} \
         --with-http_ssl_module \
+        --with-openssl=./openssl-%{ngx_openssl_version} \
         --with-http_realip_module \
         --with-http_addition_module \
         --with-http_sub_module \
@@ -215,6 +212,7 @@ make %{?_smp_mflags}
         --user=%{nginx_user} \
         --group=%{nginx_group} \
         --with-http_ssl_module \
+        --with-openssl=./openssl-%{ngx_openssl_version} \
         --with-http_realip_module \
         --with-http_addition_module \
         --with-http_sub_module \
@@ -445,9 +443,12 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-2
+- openssl 1.0.2h library static link
+
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-1
 - 1.11.1
- 
+
 * Thu Apr 21 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.9.15-1
 - 1.9.15
  
