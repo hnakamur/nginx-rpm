@@ -445,6 +445,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-1
+- 1.11.1
+ 
 * Thu Apr 21 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.9.15-1
 - 1.9.15
  
