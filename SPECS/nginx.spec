@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_commit 4f2954302ce642a6f17255cff294663aa6552d8d
+%define ngx_lua_version 0.10.5
 %define ngx_sorted_query_string_version 0.2
 %define ngx_openssl_version 1.0.2h
 
@@ -49,7 +49,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.1
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -66,7 +66,7 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/%{ngx_lua_commit}.tar.gz#/lua-nginx-module-%{ngx_lua_commit}.tar.gz 
+Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
 Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
 Source103: https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz#/nginx_upstream_check_module-master.tar.gz
@@ -173,7 +173,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_version} \
         --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
@@ -236,7 +236,7 @@ make %{?_smp_mflags}
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_commit} \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_version} \
         --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-module=./nginx_upstream_check_module-master \
@@ -443,6 +443,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
+- nginx lua module update v0.10.5 
+
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-2
 - openssl 1.0.2h library static link
 
