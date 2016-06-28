@@ -54,7 +54,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.9.15
+Version: 1.11.1
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -94,6 +94,7 @@ Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
 Patch115: nginx-dav-ext.dynamic-module.patch
+Patch118: nginx-rtmp-module.sockaddr_pointer.patch
 
 License: 2-clause BSD-like license
 
@@ -126,6 +127,7 @@ a mail proxy server.
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
 %patch115 -d ./nginx-dav-ext-module-master -p1
+%patch118 -d ./nginx-rtmp-module-master -p1
 patch -p0 < ./nginx_upstream_check_module-master/check_1.9.2+.patch
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -443,6 +445,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-1
+- 1.11.1
+ 
 * Thu Apr 21 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.9.15-1
 - 1.9.15
  
