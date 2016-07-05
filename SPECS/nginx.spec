@@ -32,6 +32,7 @@ Requires(pre): shadow-utils
 Requires: systemd
 BuildRequires: systemd
 Epoch: 1
+%define tcp_fast_open 1
 %define with_http2 1
 %endif
 
@@ -190,7 +191,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./nginx-dav-ext-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
