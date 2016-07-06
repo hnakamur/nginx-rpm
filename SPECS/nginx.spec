@@ -48,7 +48,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.1
+Version: 1.11.2
 Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -443,6 +443,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul 06 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.2-1
+- 1.11.2
+
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
 - nginx lua module update v0.10.5 
 
