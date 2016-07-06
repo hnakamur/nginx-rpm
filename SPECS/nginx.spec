@@ -32,6 +32,7 @@ Requires(pre): shadow-utils
 Requires: systemd
 BuildRequires: systemd
 Epoch: 1
+%define tcp_fast_open 1
 %define with_http2 1
 %endif
 
@@ -49,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.1
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -190,7 +191,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./nginx-dav-ext-module-master \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
@@ -252,7 +253,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
 make %{?_smp_mflags}
 
@@ -443,6 +444,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul 06 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-4
+- support CentOS7 TCP Fast Open
+
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
 - nginx lua module update v0.10.5 
 
