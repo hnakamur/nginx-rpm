@@ -253,7 +253,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
 make %{?_smp_mflags}
 
@@ -444,6 +444,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul 07 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
+- support CentOS7 TCP Fast Open
+
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
 - nginx lua module update v0.10.5 
 
