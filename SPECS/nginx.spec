@@ -49,8 +49,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.2
-Release: 2%{?dist}.ngx
+Version: 1.11.3
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -438,6 +438,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sat Jul 30 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-1
+- 1.11.3
+
 * Sat Jul 30 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.2-3
 - Remove nginx_upstream_check_module
 
