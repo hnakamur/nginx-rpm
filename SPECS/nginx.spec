@@ -5,7 +5,7 @@
 %define nginx_loggroup adm
 
 %define ngx_lua_version 0.10.5
-%define ngx_sorted_query_string_version 0.2
+%define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2h
 
 # distribution specific definitions
@@ -50,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.3
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -85,7 +85,6 @@ Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/n
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz  
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
-Patch104: nginx-sorted-querystring.dynamic-module.patch
 Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
@@ -117,7 +116,6 @@ a mail proxy server.
 %prep
 %setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 120
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
-%patch104 -d ./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} -p1
 %patch106 -d ./ngx_cache_purge-master -p1
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
@@ -438,6 +436,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Aug  1 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-2
+- Update https://github.com/openresty/lua-nginx-module to 0.3.0
+
 * Sat Jul 30 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-1
 - 1.11.3
 
