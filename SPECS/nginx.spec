@@ -50,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.3
-Release: 4%{?dist}.ngx
+Release: 5%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -75,6 +75,7 @@ Source105: https://github.com/arut/nginx-rtmp-module/archive/master.tar.gz#/ngin
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx_cache_purge-master.tar.gz
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
+Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
 Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
 Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
 Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
@@ -114,7 +115,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 120
+%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 120
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch106 -d ./ngx_cache_purge-master -p1
 %patch107 -d ./ngx_http_secure_download-master -p1
@@ -177,6 +178,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=./redis2-nginx-module-master \
+        --add-dynamic-module=./srcache-nginx-module-master \
         --add-dynamic-module=./memc-nginx-module-master \
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
@@ -239,6 +241,7 @@ make %{?_smp_mflags}
         --add-dynamic-module=./ngx_http_secure_download-master \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=./redis2-nginx-module-master \
+        --add-dynamic-module=./srcache-nginx-module-master \
         --add-dynamic-module=./memc-nginx-module-master \
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
@@ -436,6 +439,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Aug 26 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-5
+- Add openresty srcache-nginx-module as a dynamic module.
+  https://github.com/openresty/srcache-nginx-module/pull/43#issuecomment-213152217
+
 * Fri Aug 26 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.3-4
 - Update https://github.com/openresty/lua-nginx-module to 0.10.6
 
