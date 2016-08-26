@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.5
+%define ngx_lua_version 0.10.6
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2h
 
@@ -50,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.3
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -436,6 +436,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Aug 26 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.3-3
+- Update https://github.com/openresty/lua-nginx-module to 0.10.6
+
 * Mon Aug  1 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-2
 - Update https://github.com/openresty/lua-nginx-module to 0.3.0
 
