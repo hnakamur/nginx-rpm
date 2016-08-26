@@ -50,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.3
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -436,7 +436,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Fri Aug 26 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.3-3
+* Fri Aug 26 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.3-4
 - Update https://github.com/openresty/lua-nginx-module to 0.10.6
 
 * Mon Aug  1 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-2
