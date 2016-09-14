@@ -49,8 +49,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.3
-Release: 5%{?dist}.ngx
+Version: 1.11.4
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -439,6 +439,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Sep 14 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.1-1
+- 1.11.4
+
 * Fri Aug 26 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.3-5
 - Add openresty srcache-nginx-module as a dynamic module.
   https://github.com/openresty/srcache-nginx-module/pull/43#issuecomment-213152217
