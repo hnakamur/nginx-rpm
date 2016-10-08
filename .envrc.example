@@ -1,5 +1,0 @@
-# NOTE: Copy this file to .envrc and edit the values
-# Go https://copr.fedoraproject.org/api/ and login in and see the values to set.
-export COPR_LOGIN=_your_login_here_
-export COPR_USERNAME=_your_username_here_
-export COPR_TOKEN=_your_token_here_
