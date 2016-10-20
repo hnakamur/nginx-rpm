@@ -49,8 +49,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.4
-Release: 2%{?dist}.ngx
+Version: 1.11.5
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -439,6 +439,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Thu Oct 20 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5.1
+- 1.11.5
+
 * Tue Sep 27 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.4-2
 - OpenSSL Update to 1.0.2j
 
