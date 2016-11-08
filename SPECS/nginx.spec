@@ -45,14 +45,12 @@ Requires: systemd
 %define nginx_loggroup trusted
 %endif
 
-Requires: mhash
-
 # end of distribution specific definitions
 
 Summary: High performance web server
 Name: nginx
 Version: 1.11.5
-Release: 3%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -441,9 +439,6 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Tue Nov  8 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5.3
-- Add Requires: mhash
-
 * Fri Oct 21 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5.2
 - Fix PIDFile path in nginx.service and nginx-debug.source
 
