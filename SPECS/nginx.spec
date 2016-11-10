@@ -50,7 +50,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.5
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -91,6 +91,11 @@ Patch107: ngx_http_secure_download.dynamic-module.patch
 Patch108: ngx_http_consistent_hash.dynamic-module.patch
 Patch115: nginx-dav-ext.dynamic-module.patch
 
+# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
+Patch201: nginx-1.11.2-ssl_cert_cb_yield.patch
+# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_pending_session.patch
+Patch202: nginx-1.11.2-ssl_pending_session.patch
+
 License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -121,6 +126,8 @@ a mail proxy server.
 %patch107 -d ./ngx_http_secure_download-master -p1
 %patch108 -d ./ngx_http_consistent_hash-master -p1
 %patch115 -d ./nginx-dav-ext-module-master -p1
+%patch201 -p1
+%patch202 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -439,10 +446,13 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Fri Oct 21 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5.2
+* Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-3
+- Apply OpenResty's SSL patches
+
+* Fri Oct 21 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-2
 - Fix PIDFile path in nginx.service and nginx-debug.source
 
-* Thu Oct 20 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5.1
+* Thu Oct 20 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-1
 - 1.11.5
 
 * Tue Sep 27 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.4-2
