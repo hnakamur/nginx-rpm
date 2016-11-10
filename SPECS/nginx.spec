@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.6
+%define ngx_lua_version 0.10.7
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2j
 
@@ -453,6 +453,7 @@ fi
 %changelog
 * Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-4
 - Switch to the OpenResty's fork of LuaJIT 2
+- Update https://github.com/openresty/lua-nginx-module to 0.10.7
 
 * Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-3
 - Apply OpenResty's SSL patches
