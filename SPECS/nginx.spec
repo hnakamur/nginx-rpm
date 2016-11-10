@@ -4,9 +4,12 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.6
+%define ngx_lua_version 0.10.7
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2j
+
+%define luajit_inc /usr/include/luajit-2.1
+%define luajit_lib /usr/lib64
 
 # distribution specific definitions
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
@@ -50,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.5
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -67,7 +70,7 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz 
+Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
 Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
 Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
@@ -83,7 +86,7 @@ Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
 Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/nginx-dav-ext-module-master.tar.gz
 
-Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz  
+Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
 Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
 Patch106: ngx_cache_purge.dynamic-module.patch
@@ -135,6 +138,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
     -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
 
 %build
+LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
@@ -198,6 +202,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
         %{_builddir}/%{name}-%{version}/objs/nginx-debug
+LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
@@ -446,6 +451,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-4
+- Switch to the OpenResty's fork of LuaJIT 2
+- Update https://github.com/openresty/lua-nginx-module to 0.10.7
+
 * Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-3
 - Apply OpenResty's SSL patches
 
@@ -488,7 +497,7 @@ fi
 - support CentOS7 TCP Fast Open
 
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-3
-- nginx lua module update v0.10.5 
+- nginx lua module update v0.10.5
 
 * Tue Jun 28 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.11.1-2
 - openssl 1.0.2h library static link
@@ -498,7 +507,7 @@ fi
 
 * Thu Apr 21 2016 Masafumi Yamamoto <masa23@gmail.com> - 1.9.15-1
 - 1.9.15
- 
+
 * Sat Apr  9 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.9.14-1
 - 1.9.14
 

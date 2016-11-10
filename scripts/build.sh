@@ -29,25 +29,16 @@ This rpm includes the following modules as dynamic modules:
 Warning: Modules may be added or deleted without notice.
 "
 
-copr_project_instructions="
-CentOS 7
-
-\`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${copr_project_name}/repo/epel-7/${COPR_USERNAME}-${copr_project_name}-epel-7.repo
+copr_project_instructions="\`\`\`
+version=\$(rpm -q --qf "%{VERSION}" \$(rpm -q --whatprovides redhat-release))
 \`\`\`
 
 \`\`\`
-sudo yum install ${rpm_name}
-\`\`\`
-
-CentOS 6
-
-\`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-luajit.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/luajit/repo/epel-6/${COPR_USERNAME}-luajit-epel-6.repo
+ver=\${version:0:1}
 \`\`\`
 
 \`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${copr_project_name}/repo/epel-6/${COPR_USERNAME}-${copr_project_name}-epel-6.repo
+sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${copr_project_name}/repo/epel-\${ver}/${COPR_USERNAME}-${copr_project_name}-epel-\${ver}.repo
 \`\`\`
 
 \`\`\`
@@ -88,6 +79,8 @@ build_srpm() {
 }
 
 create_luajit_repo_file() {
+  base_chroot=$1
+
   luajit_repo_file=luajit.repo
   if [ ! -f $luajit_repo_file ]; then
     # NOTE: Although https://copr.fedorainfracloud.org/coprs/hnakamur/luajit/repo/epel-6/hnakamur-luajit-epel-6.repo
@@ -95,7 +88,7 @@ create_luajit_repo_file() {
     cat > ${luajit_repo_file} <<EOF
 [hnakamur-luajit]
 name=Copr repo for luajit owned by hnakamur
-baseurl=${luajit_repo_baseurl}
+baseurl=https://copr-be.cloud.fedoraproject.org/results/hnakamur/luajit/${base_chroot}/
 enabled=1
 gpgcheck=0
 EOF
@@ -106,7 +99,7 @@ create_mock_chroot_cfg() {
   base_chroot=$1
   mock_chroot=$2
 
-  create_luajit_repo_file
+  create_luajit_repo_file $base_chroot
 
   # Insert ${scl_repo_file} before closing """ of config_opts['yum.conf']
   # See: http://unix.stackexchange.com/a/193513/135274
@@ -124,12 +117,8 @@ build_rpm_with_mock() {
   build_srpm
   for mock_chroot in $mock_chroots; do
     base_chroot=$mock_chroot
-    case $mock_chroot in
-    epel-6-${arch})
-      mock_chroot=${base_chroot}-with-luajit
-      create_mock_chroot_cfg $base_chroot $mock_chroot
-      ;;
-    esac
+    mock_chroot=${base_chroot}-with-luajit
+    create_mock_chroot_cfg $base_chroot $mock_chroot
     /usr/bin/mock -r ${mock_chroot} --rebuild ${topdir}/SRPMS/${srpm_file}
 
     mock_result_dir=/var/lib/mock/${base_chroot}/result
@@ -158,11 +147,14 @@ build_rpm_on_copr() {
     chroot_opts=''
     for mock_chroot in $mock_chroots; do
       chroot_opts="$chroot_opts --data-urlencode ${mock_chroot}=y"
+
+      # Remove suffix '-x86_64' from epel-6-x86_64, or epel-7-x86_64
+      chroot_without_arch=${base_chroot%-*}
+      chroot_opts="$chroot_opts --data-urlencode repos=https://copr-be.cloud.fedoraproject.org/results/hnakamur/luajit/${chroot_without_arch}-\$basearch/"
     done
     curl -s -X POST -u "${COPR_LOGIN}:${COPR_TOKEN}" \
       --data-urlencode "name=${copr_project_name}" \
       $chroot_opts \
-      --data-urlencode "repos=${luajit_repo_baseurl}" \
       --data-urlencode "description=${copr_project_description}" \
       --data-urlencode "instructions=${copr_project_instructions}" \
       https://copr.fedoraproject.org/api/coprs/${COPR_USERNAME}/new/
