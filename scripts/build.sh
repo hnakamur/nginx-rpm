@@ -80,8 +80,6 @@ build_srpm() {
 
 create_luajit_repo_file() {
   base_chroot=$1
-  # Remove suffix '-x86_64' from epel-6-x86_64, or epel-7-x86_64
-  chroot_without_arch=${base_chroot%-*}
 
   luajit_repo_file=luajit.repo
   if [ ! -f $luajit_repo_file ]; then
@@ -90,7 +88,7 @@ create_luajit_repo_file() {
     cat > ${luajit_repo_file} <<EOF
 [hnakamur-luajit]
 name=Copr repo for luajit owned by hnakamur
-baseurl=https://copr-be.cloud.fedoraproject.org/results/hnakamur/luajit/${chroot_without_arch}-\$basearch/
+baseurl=https://copr-be.cloud.fedoraproject.org/results/hnakamur/luajit/${base_chroot}/
 enabled=1
 gpgcheck=0
 EOF
