@@ -82,7 +82,8 @@ Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.
 # NOTE: Temporarily use the pull request version at https://github.com/openresty/redis2-nginx-module/pull/42
 Source110: https://github.com/charlesportwoodii/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
 #Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
-Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
+Source111: https://github.com/hnakamur/memc-nginx-module/archive/fix_build_issue_with_nginx_1_11_6.tar.gz#/memc-nginx-module-fix_build_issue_with_nginx_1_11_6.tar.gz
+#Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
 Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
 Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
@@ -192,7 +193,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=./redis2-nginx-module-master \
         --add-dynamic-module=./srcache-nginx-module-master \
-        --add-dynamic-module=./memc-nginx-module-master \
+        --add-dynamic-module=./memc-nginx-module-fix_build_issue_with_nginx_1_11_6 \
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
@@ -256,7 +257,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./ngx_http_consistent_hash-master \
         --add-dynamic-module=./redis2-nginx-module-master \
         --add-dynamic-module=./srcache-nginx-module-master \
-        --add-dynamic-module=./memc-nginx-module-master \
+        --add-dynamic-module=./memc-nginx-module-fix_build_issue_with_nginx_1_11_6 \
         --add-dynamic-module=./lua-upstream-nginx-module-master \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
