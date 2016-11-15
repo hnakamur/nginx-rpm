@@ -79,7 +79,9 @@ Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx
 Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
 Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
 Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
-Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
+# NOTE: Temporarily use the pull request version at https://github.com/openresty/redis2-nginx-module/pull/42
+Source110: https://github.com/charlesportwoodii/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
+#Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
 Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
 Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
 Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
