@@ -52,8 +52,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.5
-Release: 4%{?dist}.ngx
+Version: 1.11.6
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -451,6 +451,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Nov 16 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.6-1
+- 1.11.6
+
 * Thu Nov 10 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.5-4
 - Switch to the OpenResty's fork of LuaJIT 2
 - Update https://github.com/openresty/lua-nginx-module to 0.10.7
