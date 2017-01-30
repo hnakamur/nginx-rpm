@@ -6,7 +6,7 @@
 
 %define ngx_lua_version 0.10.7
 %define ngx_sorted_query_string_version 0.3
-%define ngx_openssl_version 1.0.2j
+%define ngx_openssl_version 1.0.2k
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -53,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -451,6 +451,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sat Jan 28 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-2
+- Update OpenSSL to 1.0.2k
+
 * Wed Jan 25 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-1
 - 1.11.9
 
