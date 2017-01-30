@@ -52,8 +52,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.6
-Release: 2%{?dist}.ngx
+Version: 1.11.7
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -451,6 +451,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Dec 20 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.7-1
+- 1.11.7
+
 * Thu Nov 17 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.6-2
 - Use master branch of redis2-nginx-module and memc-nginx-module
 - https://github.com/openresty/redis2-nginx-module/pull/42
