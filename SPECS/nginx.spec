@@ -53,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -387,30 +387,7 @@ getent passwd %{nginx_user} >/dev/null || \
 exit 0
 
 %post
-# Register the nginx service
 if [ $1 -eq 1 ]; then
-%if %{use_systemd}
-    /usr/bin/systemctl preset nginx.service >/dev/null 2>&1 ||:
-    /usr/bin/systemctl preset nginx-debug.service >/dev/null 2>&1 ||:
-%else
-    /sbin/chkconfig --add nginx
-    /sbin/chkconfig --add nginx-debug
-%endif
-    # print site info
-    cat <<BANNER
-----------------------------------------------------------------------
-
-Thanks for using nginx!
-
-Please find the official documentation for nginx here:
-* http://nginx.org/en/docs/
-
-Commercial subscriptions for nginx are available on:
-* http://nginx.com/products/
-
-----------------------------------------------------------------------
-BANNER
-
     # Touch and set permisions on default log files on installation
 
     if [ -d %{_localstatedir}/log/nginx ]; then
@@ -451,7 +428,10 @@ fi
 # Please do graceful restart manually after updating config files.
 
 %changelog
-* Mon Jan 28 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-3
+* Tue Jan 31 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-4
+- Do not run systemctl preset or chkconfig add in %post.
+
+* Mon Jan 30 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-3
 - Do not run graceful restart after yum update nginx.
 
 * Sat Jan 28 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-2
