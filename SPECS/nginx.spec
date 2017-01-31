@@ -53,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.6
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -386,71 +386,10 @@ getent passwd %{nginx_user} >/dev/null || \
     -d %{nginx_home} -c "nginx user"  %{nginx_user}
 exit 0
 
-%post
-# Register the nginx service
-if [ $1 -eq 1 ]; then
-%if %{use_systemd}
-    /usr/bin/systemctl preset nginx.service >/dev/null 2>&1 ||:
-    /usr/bin/systemctl preset nginx-debug.service >/dev/null 2>&1 ||:
-%else
-    /sbin/chkconfig --add nginx
-    /sbin/chkconfig --add nginx-debug
-%endif
-    # print site info
-    cat <<BANNER
-----------------------------------------------------------------------
-
-Thanks for using nginx!
-
-Please find the official documentation for nginx here:
-* http://nginx.org/en/docs/
-
-Commercial subscriptions for nginx are available on:
-* http://nginx.com/products/
-
-----------------------------------------------------------------------
-BANNER
-
-    # Touch and set permisions on default log files on installation
-
-    if [ -d %{_localstatedir}/log/nginx ]; then
-        if [ ! -e %{_localstatedir}/log/nginx/access.log ]; then
-            touch %{_localstatedir}/log/nginx/access.log
-            %{__chmod} 640 %{_localstatedir}/log/nginx/access.log
-            %{__chown} nginx:%{nginx_loggroup} %{_localstatedir}/log/nginx/access.log
-        fi
-
-        if [ ! -e %{_localstatedir}/log/nginx/error.log ]; then
-            touch %{_localstatedir}/log/nginx/error.log
-            %{__chmod} 640 %{_localstatedir}/log/nginx/error.log
-            %{__chown} nginx:%{nginx_loggroup} %{_localstatedir}/log/nginx/error.log
-        fi
-    fi
-fi
-
-%preun
-if [ $1 -eq 0 ]; then
-%if %use_systemd
-    /usr/bin/systemctl --no-reload disable nginx.service >/dev/null 2>&1 ||:
-    /usr/bin/systemctl stop nginx.service >/dev/null 2>&1 ||:
-%else
-    /sbin/service nginx stop > /dev/null 2>&1
-    /sbin/chkconfig --del nginx
-    /sbin/chkconfig --del nginx-debug
-%endif
-fi
-
-%postun
-%if %use_systemd
-/usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
-%endif
-if [ $1 -ge 1 ]; then
-    /sbin/service nginx status  >/dev/null 2>&1 || exit 0
-    /sbin/service nginx upgrade >/dev/null 2>&1 || echo \
-        "Binary upgrade failed, please check nginx's error.log"
-fi
-
 %changelog
+* Tue Jan 31 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.6-3
+- Do nothing for %post, %preun and %postun
+
 * Thu Nov 17 2016 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.6-2
 - Use master branch of redis2-nginx-module and memc-nginx-module
 - https://github.com/openresty/redis2-nginx-module/pull/42
