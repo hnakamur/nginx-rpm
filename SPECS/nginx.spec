@@ -53,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 4%{?dist}.ngx
+Release: 5%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -386,48 +386,10 @@ getent passwd %{nginx_user} >/dev/null || \
     -d %{nginx_home} -c "nginx user"  %{nginx_user}
 exit 0
 
-%post
-if [ $1 -eq 1 ]; then
-    # Touch and set permisions on default log files on installation
-
-    if [ -d %{_localstatedir}/log/nginx ]; then
-        if [ ! -e %{_localstatedir}/log/nginx/access.log ]; then
-            touch %{_localstatedir}/log/nginx/access.log
-            %{__chmod} 640 %{_localstatedir}/log/nginx/access.log
-            %{__chown} nginx:%{nginx_loggroup} %{_localstatedir}/log/nginx/access.log
-        fi
-
-        if [ ! -e %{_localstatedir}/log/nginx/error.log ]; then
-            touch %{_localstatedir}/log/nginx/error.log
-            %{__chmod} 640 %{_localstatedir}/log/nginx/error.log
-            %{__chown} nginx:%{nginx_loggroup} %{_localstatedir}/log/nginx/error.log
-        fi
-    fi
-fi
-
-%preun
-if [ $1 -eq 0 ]; then
-%if %use_systemd
-    /usr/bin/systemctl --no-reload disable nginx.service >/dev/null 2>&1 ||:
-    /usr/bin/systemctl stop nginx.service >/dev/null 2>&1 ||:
-%else
-    /sbin/service nginx stop > /dev/null 2>&1
-    /sbin/chkconfig --del nginx
-    /sbin/chkconfig --del nginx-debug
-%endif
-fi
-
-%postun
-%if %use_systemd
-if [ $1 -eq 0 ]; then
-    /usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
-fi
-%endif
-# NOTE: If you had removed /etc/nginx/conf.d/default.conf,
-# it is created again by running yum update nginx.
-# Please do graceful restart manually after updating config files.
-
 %changelog
+* Tue Jan 31 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-5
+- Do nothing for %post, %preun and %postun
+
 * Tue Jan 31 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-4
 - Do not run systemctl preset or chkconfig add in %post.
 
