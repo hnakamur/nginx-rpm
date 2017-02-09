@@ -53,7 +53,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 6%{?dist}.ngx
+Release: 7%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -442,22 +442,18 @@ fi
 
 %postun
 %if %use_systemd
-if [ $1 -eq 0 ]; then
-    /usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
-fi
+/usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
 %endif
-#
-# NOTE: Disable service upgrade here.
-# If you had removed /etc/nginx/conf.d/default.conf,
-# it is created again by running yum update nginx.
-# Please do graceful restart manually after updating config files.
-#if [ $1 -ge 1 ]; then
-#    /sbin/service nginx status  >/dev/null 2>&1 || exit 0
-#    /sbin/service nginx upgrade >/dev/null 2>&1 || echo \
-#        "Binary upgrade failed, please check nginx's error.log"
-#fi
+if [ $1 -ge 1 ]; then
+    /sbin/service nginx status  >/dev/null 2>&1 || exit 0
+    /sbin/service nginx upgrade >/dev/null 2>&1 || echo \
+        "Binary upgrade failed, please check nginx's error.log"
+fi
 
 %changelog
+* Thu Feb  9 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-7
+- Revert %post, %preun and %postun to the original.
+
 * Tue Jan 31 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-6
 - Revert %post, %preun and %postun but keep running process during upgrade.
 
