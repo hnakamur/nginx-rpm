@@ -25,6 +25,8 @@ This rpm includes the following modules as dynamic modules:
 * [openresty/echo-nginx-module](https://github.com/openresty/echo-nginx-module)
 * [bpaquet/ngx_http_enhanced_memcached_module](https://github.com/bpaquet/ngx_http_enhanced_memcached_module)
 * [arut/nginx-dav-ext-module](https://github.com/arut/nginx-dav-ext-module)
+* [simpl/ngx_devel_kit](https://github.com/simpl/ngx_devel_kit)
+* [openresty/set-misc-nginx-module](https://github.com/openresty/set-misc-nginx-module)
 
 Warning: Modules may be added or deleted without notice.
 "

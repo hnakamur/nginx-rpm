@@ -7,6 +7,8 @@
 %define ngx_lua_version 0.10.7
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2k
+%define ngx_devel_kit_version 0.3.0
+%define set_misc_nginx_version 0.31
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -53,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 7%{?dist}.ngx
+Release: 8%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -85,6 +87,8 @@ Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master
 Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
 Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/nginx-dav-ext-module-master.tar.gz
+Source116: https://github.com/simpl/ngx_devel_kit/archive/v%{ngx_devel_kit_version}.tar.gz#/ngx_devel_kit-%{ngx_devel_kit_version}.tar.gz
+Source117: https://github.com/openresty/set-misc-nginx-module/archive/v%{set_misc_nginx_version}.tar.gz#/set-misc-nginx-module-%{set_misc_nginx_version}.tar.gz
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
@@ -123,7 +127,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 120
+%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 120
 %patch102 -d ./lua-upstream-cache-nginx-module-master -p1
 %patch106 -d ./ngx_cache_purge-master -p1
 %patch107 -d ./ngx_http_secure_download-master -p1
@@ -195,6 +199,8 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
+        --add-dynamic-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
+        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -259,6 +265,8 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
+        --add-dynamic-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
+        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
@@ -451,6 +459,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Tue Mar 21 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-8
+- Add ngx_devel_kit v0.3.0.
+- Add set-misc-nginx-module v0.31.
+
 * Thu Feb  9 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-7
 - Revert %post, %preun and %postun to the original.
 
