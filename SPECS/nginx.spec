@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.7
+%define ngx_lua_version 0.10.8
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2k
 %define ngx_devel_kit_version 0.3.0
@@ -461,6 +461,7 @@ fi
 %changelog
 * Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.13-1
 - 1.11.13
+- Update ngx_lua_version to 0.10.8
 
 * Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-9
 - Build ngx_devel_kit as a static module.
