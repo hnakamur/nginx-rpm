@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.7
+%define ngx_lua_version 0.10.8
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2k
 %define ngx_devel_kit_version 0.3.0
@@ -54,8 +54,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.9
-Release: 9%{?dist}.ngx
+Version: 1.11.10
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -459,6 +459,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.10-1
+- 1.11.10
+- Update ngx_lua_version to 0.10.8
+
 * Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-9
 - Build ngx_devel_kit as a static module.
 
