@@ -55,7 +55,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.11.9
-Release: 8%{?dist}.ngx
+Release: 9%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -199,7 +199,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
-        --add-dynamic-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
+        --add-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
         --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
@@ -265,7 +265,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./echo-nginx-module-master \
         --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
         --add-dynamic-module=./nginx-dav-ext-module-master \
-        --add-dynamic-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
+        --add-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
         --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -459,6 +459,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-9
+- Build ngx_devel_kit as a static module.
+
 * Tue Mar 21 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-8
 - Add ngx_devel_kit v0.3.0.
 - Add set-misc-nginx-module v0.31.
