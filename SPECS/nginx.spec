@@ -54,8 +54,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.9
-Release: 9%{?dist}.ngx
+Version: 1.11.13
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -459,6 +459,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.13-1
+- 1.11.13
+
 * Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.9-9
 - Build ngx_devel_kit as a static module.
 
