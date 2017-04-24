@@ -4,7 +4,8 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_version 0.10.8
+%define ngx_lua_hash_version ca8ed0e8cd746c41450b14abff5e40d8f713ccc9 
+#%define ngx_lua_version 0.10.8
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2k
 %define ngx_devel_kit_version 0.3.0
@@ -54,7 +55,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.11.10
+Version: 1.11.13
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -72,7 +73,8 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz
+#Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz
+Source100: https://github.com/openresty/lua-nginx-module/archive/%{ngx_lua_hash_version}.tar.gz#/lua-nginx-module-%{ngx_lua_hash_version}.tar.gz
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
 Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
 Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
@@ -183,8 +185,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --with-ipv6 \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_hash_version} \
         --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
@@ -249,8 +250,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --with-ipv6 \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_version} \
+        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_hash_version} \
         --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
         --add-dynamic-module=./headers-more-nginx-module-master \
         --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
@@ -459,6 +459,11 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Apr 24 2017 Masafumi Yamamoto <masa23@gmail.com> - 1.11.13-1
+- 1.11.13
+- Update ngx_lua_version commit hash ca8ed0e8cd746c41450b14abff5e40d8f713ccc9
+- delete configure option --with-ipv6
+ 
 * Mon Apr 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.11.10-1
 - 1.11.10
 - Update ngx_lua_version to 0.10.8
