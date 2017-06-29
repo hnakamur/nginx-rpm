@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_hash_version 69d995513b17df9ebb09dd4ea6656e1f78b28a34
+%define ngx_lua_hash_version 031e0000429e18d3220c0d530fa03b9ba20d9489
 #%define ngx_lua_version 1.13.1
 %define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2l
@@ -55,7 +55,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.13.1
+Version: 1.13.2
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -459,6 +459,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jun 28 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.2-1
+- 1.13.2
+- Update ngx_lua_version commit hash 031e0000429e18d3220c0d530fa03b9ba20d9489
+
 * Mon Jun 12 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.1-1
 - 1.13.1
 - Update OpenSSL to 1.0.2l
