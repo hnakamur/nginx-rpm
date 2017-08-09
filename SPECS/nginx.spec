@@ -102,11 +102,26 @@ Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
-Patch106: ngx_cache_purge.dynamic-module.patch
-Patch107: ngx_http_secure_download.dynamic-module.patch
-
-# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
-Patch201: nginx-1.11.2-ssl_cert_cb_yield.patch
+Patch01: ngx_http_v2_upstream-01-of-14.patch
+Patch02: ngx_http_v2_upstream-02-of-14.patch
+Patch03: ngx_http_v2_upstream-03-of-14.patch
+Patch04: ngx_http_v2_upstream-04-of-14.patch
+Patch05: ngx_http_v2_upstream-05-of-14.patch
+Patch06: ngx_http_v2_upstream-06-of-14.patch
+Patch07: ngx_http_v2_upstream-07-of-14.patch
+Patch08: ngx_http_v2_upstream-08-of-14.patch
+Patch09: ngx_http_v2_upstream-09-of-14.patch
+Patch10: ngx_http_v2_upstream-10-of-14.patch
+Patch11: ngx_http_v2_upstream-12-of-14.patch
+Patch12: ngx_http_v2_upstream-13-of-14.patch
+Patch13: ngx_http_v2_upstream-14-of-14.patch
+Patch14: ngx_http_secure_download-dynamic_module.patch
+Patch15: ngx_cache_purge-dynamic_module.patch
+Patch16: ngx_cache_purge-fix_compatibility_with_nginx_1.11.6.patch
+Patch17: ngx_cache_purge-feat_purge_all.patch
+Patch18: ngx_cache_purge-feat_purge_partial_keys.patch
+Patch19: ngx_cache_purge-select_response_type.patch
+Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 
 License: 2-clause BSD-like license
 
@@ -133,9 +148,26 @@ a mail proxy server.
 
 %prep
 %setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 120
-%patch106 -d ./ngx_cache_purge-%{ngx_cache_purge_commit} -p1
-%patch107 -d ./ngx_http_secure_download-%{ngx_http_secure_download_commit} -p1
-%patch201 -p1
+%patch01 -p1
+%patch02 -p1
+%patch03 -p1
+%patch04 -p1
+%patch05 -p1
+%patch06 -p1
+%patch07 -p1
+%patch08 -p1
+%patch09 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -456,21 +488,21 @@ fi
 %changelog
 * Wed Aug  9 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.4-1
 - 1.13.4
-- openresty/echo-nginx-module d95da3500ae992b703f90dea926877b728818104
-- openresty/headers-more-nginx-module 7b0762aba64495e289c3f9cd7f0bd74d0051a980
-- openresty/lua-nginx-module 89de7802227fd97005cb03b5d1fc38b809093b70
-- openresty/lua-upstream-nginx-module a84fbbb3d3b07684c232f642eccbc5334bafcbfe
-- openresty/memc-nginx-module 31ba7ff6d53201f1afa0b6fff5d6233336168c83
-- openresty/redis2-nginx-module 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
-- openresty/set-misc-nginx-module 48908343c00a45a40365158282f61d5369d17194
-- openresty/srcache-nginx-module af82f755b8a92765fff0b3e70b26bedf4bbacadc
-- FRiCKLE/ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
-- arut/nginx-rtmp-module 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
-- arut/nginx-dav-ext-module 430fd774fe838a04f1a5defbf1dd571d42300cf9
-- bpaquet/ngx_http_enhanced_memcached_module a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
-- replay/ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
-- simpl/ngx_devel_kit e443262071e759c047492be60ec7e2d73c5b57ec
-- wandenberg/nginx-sorted-querystring-module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- echo_nginx_module d95da3500ae992b703f90dea926877b728818104
+- headers_more_nginx_module 7b0762aba64495e289c3f9cd7f0bd74d0051a980
+- lua_nginx_module 89de7802227fd97005cb03b5d1fc38b809093b70
+- lua_upstream_nginx_module a84fbbb3d3b07684c232f642eccbc5334bafcbfe
+- memc_nginx_module 31ba7ff6d53201f1afa0b6fff5d6233336168c83
+- redis2_nginx_module 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
+- set_misc_nginx_module 48908343c00a45a40365158282f61d5369d17194
+- srcache_nginx_module af82f755b8a92765fff0b3e70b26bedf4bbacadc
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit e443262071e759c047492be60ec7e2d73c5b57ec
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 - Delete lua-nginx-cache-module
 - Delete replay/ngx_http_consistent_hash
 

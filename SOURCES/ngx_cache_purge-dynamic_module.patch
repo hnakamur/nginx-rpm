@@ -1,7 +1,17 @@
-diff -ruN ngx_cache_purge-master.orig/config ngx_cache_purge-master/config
---- ngx_cache_purge-master.orig/config	2014-12-23 12:01:15.000000000 +0000
-+++ ngx_cache_purge-master/config	2016-02-11 22:39:11.051247312 +0000
-@@ -15,7 +15,17 @@
+From: Hiroaki Nakamura <hnakamur@gmail.com>
+Date: Fri, 12 Feb 2016 09:03:35 +0900
+Subject: Convert a config file to build a dynamic module
+
+Origin: https://github.com/FRiCKLE/ngx_cache_purge/pull/45/commits/26d7114ac82195cd4f7db606d7762a6cff9132ad
+---
+ ngx_cache_purge/config | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/ngx_cache_purge/config b/ngx_cache_purge/config
+index 34f42ec..b900680 100644
+--- a/ngx_cache_purge/config
++++ b/ngx_cache_purge/config
+@@ -15,7 +15,17 @@ if [ "$HTTP_UWSGI" = "YES" ]; then
  fi
  
  ngx_addon_name=ngx_http_cache_purge_module

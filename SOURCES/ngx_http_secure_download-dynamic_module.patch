@@ -1,6 +1,16 @@
-diff -ruN ngx_http_secure_download-master.orig/config ngx_http_secure_download-master/config
---- ngx_http_secure_download-master.orig/config	2014-04-17 07:24:54.000000000 +0000
-+++ ngx_http_secure_download-master/config	2016-02-15 02:38:40.871087527 +0000
+From: Hiroaki Nakamura <hnakamur@gmail.com>
+Date: Fri, 12 Feb 2016 09:05:48 +0900
+Subject: Make replay/ngx_http_secure_download as dynamic module as well
+
+Origin: https://github.com/replay/ngx_http_secure_download/pull/4/files
+---
+ ngx_http_secure_download/config | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/ngx_http_secure_download/config b/ngx_http_secure_download/config
+index 2403adc..7e5ddeb 100644
+--- a/ngx_http_secure_download/config
++++ b/ngx_http_secure_download/config
 @@ -1,5 +1,16 @@
  USE_SHA1=YES
 -ngx_addon_name=ngx_http_secure_download

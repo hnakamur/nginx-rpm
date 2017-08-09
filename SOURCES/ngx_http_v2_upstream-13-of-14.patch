@@ -1,0 +1,385 @@
+From: Piotr Sikora <piotrsikora@google.com>
+Date: Fri, 24 Mar 2017 03:37:34 -0700
+Subject: Proxy: add "proxy_pass_trailers" directive.
+
+Signed-off-by: Piotr Sikora <piotrsikora@google.com>
+Origin: http://mailman.nginx.org/pipermail/nginx-devel/2017-June/010220.html
+---
+ src/http/modules/ngx_http_fastcgi_module.c   |   4 +-
+ src/http/modules/ngx_http_memcached_module.c |   1 +
+ src/http/modules/ngx_http_proxy_module.c     |  38 ++++++++-
+ src/http/modules/ngx_http_scgi_module.c      |   4 +-
+ src/http/modules/ngx_http_uwsgi_module.c     |   4 +-
+ src/http/ngx_http_upstream.c                 | 118 +++++++++++++++++++++++++++
+ src/http/ngx_http_upstream.h                 |   2 +
+ 7 files changed, 163 insertions(+), 8 deletions(-)
+
+diff --git a/src/http/modules/ngx_http_fastcgi_module.c b/src/http/modules/ngx_http_fastcgi_module.c
+index ea16eca..2696119 100644
+--- a/src/http/modules/ngx_http_fastcgi_module.c
++++ b/src/http/modules/ngx_http_fastcgi_module.c
+@@ -2788,10 +2788,10 @@ ngx_http_fastcgi_create_loc_conf(ngx_conf_t *cf)
+ 
+     conf->upstream.intercept_errors = NGX_CONF_UNSET;
+ 
+-    /* "fastcgi_cyclic_temp_file" is disabled */
++    /* the hardcoded values */
+     conf->upstream.cyclic_temp_file = 0;
+-
+     conf->upstream.change_buffering = 1;
++    conf->upstream.pass_trailers = 0;
+ 
+     conf->catch_stderr = NGX_CONF_UNSET_PTR;
+ 
+diff --git a/src/http/modules/ngx_http_memcached_module.c b/src/http/modules/ngx_http_memcached_module.c
+index 69f28fa..b681e45 100644
+--- a/src/http/modules/ngx_http_memcached_module.c
++++ b/src/http/modules/ngx_http_memcached_module.c
+@@ -619,6 +619,7 @@ ngx_http_memcached_create_loc_conf(ngx_conf_t *cf)
+     conf->upstream.pass_request_headers = 0;
+     conf->upstream.pass_request_body = 0;
+     conf->upstream.force_ranges = 1;
++    conf->upstream.pass_trailers = 0;
+ 
+     conf->index = NGX_CONF_UNSET;
+     conf->gzip_flag = NGX_CONF_UNSET_UINT;
+diff --git a/src/http/modules/ngx_http_proxy_module.c b/src/http/modules/ngx_http_proxy_module.c
+index e31403f..b258fcd 100644
+--- a/src/http/modules/ngx_http_proxy_module.c
++++ b/src/http/modules/ngx_http_proxy_module.c
+@@ -630,6 +630,13 @@ static ngx_command_t  ngx_http_proxy_commands[] = {
+       offsetof(ngx_http_proxy_loc_conf_t, upstream.ignore_headers),
+       &ngx_http_upstream_ignore_headers_masks },
+ 
++    { ngx_string("proxy_pass_trailers"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_flag_slot,
++      NGX_HTTP_LOC_CONF_OFFSET,
++      offsetof(ngx_http_proxy_loc_conf_t, upstream.pass_trailers),
++      NULL },
++
+     { ngx_string("proxy_http_version"),
+       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+       ngx_conf_set_enum_slot,
+@@ -3483,6 +3490,8 @@ ngx_http_proxy_create_loc_conf(ngx_conf_t *cf)
+     conf->upstream.hide_headers = NGX_CONF_UNSET_PTR;
+     conf->upstream.pass_headers = NGX_CONF_UNSET_PTR;
+ 
++    conf->upstream.pass_trailers = NGX_CONF_UNSET;
++
+     conf->upstream.intercept_errors = NGX_CONF_UNSET;
+ 
+ #if (NGX_HTTP_SSL)
+@@ -3494,11 +3503,11 @@ ngx_http_proxy_create_loc_conf(ngx_conf_t *cf)
+     conf->ssl_passwords = NGX_CONF_UNSET_PTR;
+ #endif
+ 
+-    /* "proxy_cyclic_temp_file" is disabled */
++    /* the hardcoded values */
+     conf->upstream.cyclic_temp_file = 0;
++    conf->upstream.change_buffering = 1;
+ 
+     conf->redirect = NGX_CONF_UNSET;
+-    conf->upstream.change_buffering = 1;
+ 
+     conf->cookie_domains = NGX_CONF_UNSET_PTR;
+     conf->cookie_paths = NGX_CONF_UNSET_PTR;
+@@ -3798,6 +3807,9 @@ ngx_http_proxy_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
+     ngx_conf_merge_value(conf->upstream.pass_request_body,
+                               prev->upstream.pass_request_body, 1);
+ 
++    ngx_conf_merge_value(conf->upstream.pass_trailers,
++                              prev->upstream.pass_trailers, 0);
++
+     ngx_conf_merge_value(conf->upstream.intercept_errors,
+                               prev->upstream.intercept_errors, 0);
+ 
+@@ -4018,6 +4030,28 @@ ngx_http_proxy_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
+ #endif
+     }
+ 
++    if (conf->upstream.pass_trailers) {
++
++        if (conf->http_version != NGX_HTTP_VERSION_20) {
++            ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
++                               "\"proxy_pass_trailers\" requires "
++                               "\"proxy_http_version 2.0\"");
++            return NGX_CONF_ERROR;
++        }
++
++#if (NGX_HTTP_CACHE)
++
++        if (conf->upstream.cache) {
++            ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
++                               "\"proxy_pass_trailers\" doesn't work with "
++                               "\"proxy_cache\"");
++            return NGX_CONF_ERROR;
++        }
++
++#endif
++
++    }
++
+     return NGX_CONF_OK;
+ }
+ 
+diff --git a/src/http/modules/ngx_http_scgi_module.c b/src/http/modules/ngx_http_scgi_module.c
+index 9204af4..c8bead7 100644
+--- a/src/http/modules/ngx_http_scgi_module.c
++++ b/src/http/modules/ngx_http_scgi_module.c
+@@ -1236,10 +1236,10 @@ ngx_http_scgi_create_loc_conf(ngx_conf_t *cf)
+ 
+     conf->upstream.intercept_errors = NGX_CONF_UNSET;
+ 
+-    /* "scgi_cyclic_temp_file" is disabled */
++    /* the hardcoded values */
+     conf->upstream.cyclic_temp_file = 0;
+-
+     conf->upstream.change_buffering = 1;
++    conf->upstream.pass_trailers = 0;
+ 
+     ngx_str_set(&conf->upstream.module, "scgi");
+ 
+diff --git a/src/http/modules/ngx_http_uwsgi_module.c b/src/http/modules/ngx_http_uwsgi_module.c
+index a2bec4c..6f0583c 100644
+--- a/src/http/modules/ngx_http_uwsgi_module.c
++++ b/src/http/modules/ngx_http_uwsgi_module.c
+@@ -1451,10 +1451,10 @@ ngx_http_uwsgi_create_loc_conf(ngx_conf_t *cf)
+     conf->ssl_passwords = NGX_CONF_UNSET_PTR;
+ #endif
+ 
+-    /* "uwsgi_cyclic_temp_file" is disabled */
++    /* the hardcoded values */
+     conf->upstream.cyclic_temp_file = 0;
+-
+     conf->upstream.change_buffering = 1;
++    conf->upstream.pass_trailers = 0;
+ 
+     ngx_str_set(&conf->upstream.module, "uwsgi");
+ 
+diff --git a/src/http/ngx_http_upstream.c b/src/http/ngx_http_upstream.c
+index b722704..aa017e3 100644
+--- a/src/http/ngx_http_upstream.c
++++ b/src/http/ngx_http_upstream.c
+@@ -56,6 +56,8 @@ static ngx_int_t ngx_http_upstream_test_connect(ngx_http_upstream_t *u,
+     ngx_connection_t *c);
+ static ngx_int_t ngx_http_upstream_process_headers(ngx_http_request_t *r,
+     ngx_http_upstream_t *u);
++static ngx_int_t ngx_http_upstream_process_trailers(ngx_http_request_t *r,
++    ngx_http_upstream_t *u);
+ static void ngx_http_upstream_process_body_in_memory(ngx_http_request_t *r,
+     ngx_http_upstream_t *u);
+ static void ngx_http_upstream_send_response(ngx_http_request_t *r,
+@@ -150,6 +152,8 @@ static ngx_int_t ngx_http_upstream_rewrite_set_cookie(ngx_http_request_t *r,
+     ngx_table_elt_t *h, ngx_uint_t offset);
+ static ngx_int_t ngx_http_upstream_copy_allow_ranges(ngx_http_request_t *r,
+     ngx_table_elt_t *h, ngx_uint_t offset);
++static ngx_int_t ngx_http_upstream_copy_trailer(ngx_http_request_t *r,
++    ngx_table_elt_t *h, ngx_uint_t offset);
+ 
+ #if (NGX_HTTP_GZIP)
+ static ngx_int_t ngx_http_upstream_copy_content_encoding(ngx_http_request_t *r,
+@@ -167,6 +171,8 @@ static ngx_int_t ngx_http_upstream_response_length_variable(
+     ngx_http_request_t *r, ngx_http_variable_value_t *v, uintptr_t data);
+ static ngx_int_t ngx_http_upstream_header_variable(ngx_http_request_t *r,
+     ngx_http_variable_value_t *v, uintptr_t data);
++static ngx_int_t ngx_http_upstream_trailer_variable(ngx_http_request_t *r,
++    ngx_http_variable_value_t *v, uintptr_t data);
+ static ngx_int_t ngx_http_upstream_cookie_variable(ngx_http_request_t *r,
+     ngx_http_variable_value_t *v, uintptr_t data);
+ 
+@@ -315,6 +321,10 @@ static ngx_http_upstream_header_t  ngx_http_upstream_headers_in[] = {
+                  ngx_http_upstream_process_charset, 0,
+                  ngx_http_upstream_copy_header_line, 0, 0 },
+ 
++    { ngx_string("Trailer"),
++                 ngx_http_upstream_ignore_header_line, 0,
++                 ngx_http_upstream_copy_trailer, 0, 0 },
++
+     { ngx_string("Transfer-Encoding"),
+                  ngx_http_upstream_process_transfer_encoding, 0,
+                  ngx_http_upstream_ignore_header_line, 0, 0 },
+@@ -430,6 +440,9 @@ static ngx_http_variable_t  ngx_http_upstream_vars[] = {
+     { ngx_string("upstream_http_"), NULL, ngx_http_upstream_header_variable,
+       0, NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_PREFIX, 0 },
+ 
++    { ngx_string("upstream_trailer_"), NULL, ngx_http_upstream_trailer_variable,
++      0, NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_PREFIX, 0 },
++
+     { ngx_string("upstream_cookie_"), NULL, ngx_http_upstream_cookie_variable,
+       0, NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_PREFIX, 0 },
+ 
+@@ -1050,6 +1063,13 @@ ngx_http_upstream_cache_send(ngx_http_request_t *r, ngx_http_upstream_t *u)
+         return NGX_ERROR;
+     }
+ 
++    if (ngx_list_init(&u->headers_in.trailers, r->pool, 2,
++                      sizeof(ngx_table_elt_t))
++        != NGX_OK)
++    {
++        return NGX_ERROR;
++    }
++
+     rc = u->process_header(r);
+ 
+     if (rc == NGX_OK) {
+@@ -1961,6 +1981,13 @@ ngx_http_upstream_reinit(ngx_http_request_t *r, ngx_http_upstream_t *u)
+         return NGX_ERROR;
+     }
+ 
++    if (ngx_list_init(&u->headers_in.trailers, r->pool, 2,
++                      sizeof(ngx_table_elt_t))
++        != NGX_OK)
++    {
++        return NGX_ERROR;
++    }
++
+     /* reinit the request chain */
+ 
+     file_pos = 0;
+@@ -2348,6 +2375,15 @@ ngx_http_upstream_process_header(ngx_http_request_t *r, ngx_http_upstream_t *u)
+             return;
+         }
+ 
++        if (ngx_list_init(&u->headers_in.trailers, r->pool, 2,
++                          sizeof(ngx_table_elt_t))
++            != NGX_OK)
++        {
++            ngx_http_upstream_finalize_request(r, u,
++                                               NGX_HTTP_INTERNAL_SERVER_ERROR);
++            return;
++        }
++
+ #if (NGX_HTTP_CACHE)
+ 
+         if (r->cache) {
+@@ -2899,6 +2935,45 @@ ngx_http_upstream_process_headers(ngx_http_request_t *r, ngx_http_upstream_t *u)
+ }
+ 
+ 
++static ngx_int_t
++ngx_http_upstream_process_trailers(ngx_http_request_t *r,
++    ngx_http_upstream_t *u)
++{
++    ngx_uint_t       i;
++    ngx_list_part_t  *part;
++    ngx_table_elt_t  *h, *ho;
++
++    if (!r->expect_trailers || !u->conf->pass_trailers) {
++        return NGX_OK;
++    }
++
++    part = &u->headers_in.trailers.part;
++    h = part->elts;
++
++    for (i = 0; /* void */; i++) {
++
++        if (i >= part->nelts) {
++            if (part->next == NULL) {
++                break;
++            }
++
++            part = part->next;
++            h = part->elts;
++            i = 0;
++        }
++
++        ho = ngx_list_push(&r->headers_out.trailers);
++        if (ho == NULL) {
++            return NGX_ERROR;
++        }
++
++        *ho = h[i];
++    }
++
++    return NGX_OK;
++}
++
++
+ static void
+ ngx_http_upstream_process_body_in_memory(ngx_http_request_t *r,
+     ngx_http_upstream_t *u)
+@@ -4512,6 +4587,13 @@ ngx_http_upstream_finalize_request(ngx_http_request_t *r,
+     }
+ 
+     if (rc == 0) {
++        if (ngx_http_upstream_process_trailers(r, u) != NGX_OK) {
++            rc = NGX_ERROR;
++            flush = 1;
++        }
++    }
++
++    if (rc == 0) {
+         rc = ngx_http_send_special(r, NGX_HTTP_LAST);
+ 
+     } else if (flush) {
+@@ -5298,6 +5380,27 @@ ngx_http_upstream_copy_allow_ranges(ngx_http_request_t *r,
+ }
+ 
+ 
++static ngx_int_t
++ngx_http_upstream_copy_trailer(ngx_http_request_t *r,
++    ngx_table_elt_t *h, ngx_uint_t offset)
++{
++    ngx_table_elt_t  *ho;
++
++    if (!r->expect_trailers || !r->upstream->conf->pass_trailers) {
++        return NGX_OK;
++    }
++
++    ho = ngx_list_push(&r->headers_out.headers);
++    if (ho == NULL) {
++        return NGX_ERROR;
++    }
++
++    *ho = *h;
++
++    return NGX_OK;
++}
++
++
+ #if (NGX_HTTP_GZIP)
+ 
+ static ngx_int_t
+@@ -5636,6 +5739,21 @@ ngx_http_upstream_header_variable(ngx_http_request_t *r,
+ 
+ 
+ static ngx_int_t
++ngx_http_upstream_trailer_variable(ngx_http_request_t *r,
++    ngx_http_variable_value_t *v, uintptr_t data)
++{
++    if (r->upstream == NULL) {
++        v->not_found = 1;
++        return NGX_OK;
++    }
++
++    return ngx_http_variable_unknown_header(v, (ngx_str_t *) data,
++                                        &r->upstream->headers_in.trailers.part,
++                                        sizeof("upstream_trailer_") - 1);
++}
++
++
++static ngx_int_t
+ ngx_http_upstream_cookie_variable(ngx_http_request_t *r,
+     ngx_http_variable_value_t *v, uintptr_t data)
+ {
+diff --git a/src/http/ngx_http_upstream.h b/src/http/ngx_http_upstream.h
+index 022ce7f..8cded7c 100644
+--- a/src/http/ngx_http_upstream.h
++++ b/src/http/ngx_http_upstream.h
+@@ -174,6 +174,7 @@ typedef struct {
+     ngx_flag_t                       request_buffering;
+     ngx_flag_t                       pass_request_headers;
+     ngx_flag_t                       pass_request_body;
++    ngx_flag_t                       pass_trailers;
+ 
+     ngx_flag_t                       ignore_client_abort;
+     ngx_flag_t                       intercept_errors;
+@@ -251,6 +252,7 @@ typedef struct {
+ 
+ typedef struct {
+     ngx_list_t                       headers;
++    ngx_list_t                       trailers;
+ 
+     ngx_uint_t                       status_n;
+     ngx_str_t                        status_line;
