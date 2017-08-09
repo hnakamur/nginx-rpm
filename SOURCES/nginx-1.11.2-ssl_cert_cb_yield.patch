@@ -1,10 +1,6 @@
-# HG changeset patch
-# User Yichun Zhang <agentzh@openresty.org>
-# Date 1451762084 28800
-#      Sat Jan 02 11:14:44 2016 -0800
-# Node ID 449f0461859c16e95bdb18e8be6b94401545d3dd
-# Parent  78b4e10b4367b31367aad3c83c9c3acdd42397c4
-SSL: handled SSL_CTX_set_cert_cb() callback yielding.
+From: Yichun Zhang <agentzh@openresty.org>
+Date: Sat, 2 Jan 2016 11:14:44 -0800
+Subject: SSL: handled SSL_CTX_set_cert_cb() callback yielding.
 
 OpenSSL 1.0.2+ introduces SSL_CTX_set_cert_cb() to allow custom
 callbacks to serve the SSL certificiates and private keys dynamically
@@ -13,10 +9,16 @@ Here we added support for such usage in NGINX 3rd-party modules
 (like ngx_lua) in NGINX's event handlers for downstream SSL
 connections.
 
-diff -r 78b4e10b4367 -r 449f0461859c src/event/ngx_event_openssl.c
---- a/src/event/ngx_event_openssl.c	Thu Dec 17 16:39:15 2015 +0300
-+++ b/src/event/ngx_event_openssl.c	Sat Jan 02 11:14:44 2016 -0800
-@@ -1210,6 +1210,23 @@
+Origin: https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
+---
+ src/event/ngx_event_openssl.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
+index 7fcff3b..b1e555d 100644
+--- a/src/event/ngx_event_openssl.c
++++ b/src/event/ngx_event_openssl.c
+@@ -1369,6 +1369,23 @@ ngx_ssl_handshake(ngx_connection_t *c)
          return NGX_AGAIN;
      }
  

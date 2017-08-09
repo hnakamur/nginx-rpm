@@ -1,0 +1,34 @@
+From: Hiroaki Nakamura <hnakamur@gmail.com>
+Date: Fri, 12 Feb 2016 09:05:48 +0900
+Subject: Make replay/ngx_http_secure_download as dynamic module as well
+
+Origin: https://github.com/replay/ngx_http_secure_download/pull/4/files
+---
+ ngx_http_secure_download/config | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/ngx_http_secure_download/config b/ngx_http_secure_download/config
+index 2403adc..7e5ddeb 100644
+--- a/ngx_http_secure_download/config
++++ b/ngx_http_secure_download/config
+@@ -1,5 +1,16 @@
+ USE_SHA1=YES
+-ngx_addon_name=ngx_http_secure_download
+-HTTP_MODULES="$HTTP_MODULES ngx_http_secure_download_module"
+-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_secure_download_module.c"
+-CORE_LIBS="$CORE_LIBS -lmhash"
++ngx_addon_name=ngx_http_secure_download_module
++HTTP_SECURE_DOWNLOAD_SRCS="$ngx_addon_dir/ngx_http_secure_download_module.c"
++HTTP_SECURE_DOWNLOAD_LIBS="-lmhash"
++if test -n "$ngx_module_link"; then
++    ngx_module_type=HTTP
++    ngx_module_name="$ngx_addon_name"
++    ngx_module_srcs="$HTTP_SECURE_DOWNLOAD_SRCS"
++    ngx_module_libs="$HTTP_SECURE_DOWNLOAD_LIBS"
++
++    . auto/module
++else
++    HTTP_MODULES="$HTTP_MODULES $ngx_addon_name"
++    NGX_ADDON_SRCS="$NGX_ADDON_SRCS $HTTP_SECURE_DOWNLOAD_SRCS"
++    CORE_LIBS="$CORE_LIBS $HTTP_SECURE_DOWNLOAD_LIBS"
++fi

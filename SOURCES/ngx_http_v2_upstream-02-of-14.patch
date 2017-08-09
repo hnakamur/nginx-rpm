@@ -1,0 +1,38 @@
+From: Piotr Sikora <piotrsikora@google.com>
+Date: Mon, 10 Apr 2017 21:51:41 -0700
+Subject: Upstream keepalive: preserve c->data.
+
+Signed-off-by: Piotr Sikora <piotrsikora@google.com>
+Origin: http://mailman.nginx.org/pipermail/nginx-devel/2017-June/010210.html
+---
+ src/http/modules/ngx_http_upstream_keepalive_module.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/http/modules/ngx_http_upstream_keepalive_module.c b/src/http/modules/ngx_http_upstream_keepalive_module.c
+index 0048e6b..5f3d815 100644
+--- a/src/http/modules/ngx_http_upstream_keepalive_module.c
++++ b/src/http/modules/ngx_http_upstream_keepalive_module.c
+@@ -27,6 +27,7 @@ typedef struct {
+ 
+     ngx_queue_t                        queue;
+     ngx_connection_t                  *connection;
++    void                              *data;
+ 
+     socklen_t                          socklen;
+     ngx_sockaddr_t                     sockaddr;
+@@ -254,6 +255,7 @@ found:
+     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, pc->log, 0,
+                    "get keepalive peer: using connection %p", c);
+ 
++    c->data = item->data;
+     c->idle = 0;
+     c->sent = 0;
+     c->log = pc->log;
+@@ -336,6 +338,7 @@ ngx_http_upstream_free_keepalive_peer(ngx_peer_connection_t *pc, void *data,
+     ngx_queue_insert_head(&kp->conf->cache, q);
+ 
+     item->connection = c;
++    item->data = c->data;
+ 
+     pc->connection = NULL;
+ 

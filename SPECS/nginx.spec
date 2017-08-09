@@ -4,12 +4,23 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_lua_hash_version cc0a793a27af48a364b951a374716b8cd5221487
-#%define ngx_lua_version 1.13.1
-%define ngx_sorted_query_string_version 0.3
 %define ngx_openssl_version 1.0.2l
-%define ngx_devel_kit_version 0.3.0
-%define set_misc_nginx_version 0.31
+
+%define echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
+%define headers_more_nginx_module_commit 7b0762aba64495e289c3f9cd7f0bd74d0051a980
+%define lua_nginx_module_commit cdd2ae921f67bf396c743406493127be496e57ce
+%define lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
+%define memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
+%define redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
+%define set_misc_nginx_module_commit 48908343c00a45a40365158282f61d5369d17194
+%define srcache_nginx_module_commit af82f755b8a92765fff0b3e70b26bedf4bbacadc
+%define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+%define nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+%define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+%define ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+%define ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+%define ngx_devel_kit_commit e443262071e759c047492be60ec7e2d73c5b57ec
+%define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -55,7 +66,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.13.3
+Version: 1.13.4
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -73,37 +84,44 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-#Source100: https://github.com/openresty/lua-nginx-module/archive/v%{ngx_lua_version}.tar.gz#/lua-nginx-module-%{ngx_lua_version}.tar.gz
-Source100: https://github.com/openresty/lua-nginx-module/archive/%{ngx_lua_hash_version}.tar.gz#/lua-nginx-module-%{ngx_lua_hash_version}.tar.gz
-Source101: https://github.com/openresty/headers-more-nginx-module/archive/master.tar.gz#/headers-more-nginx-module-master.tar.gz
-Source102: https://github.com/cloudflare/lua-nginx-cache-module/archive/master.tar.gz#/lua-upstream-cache-nginx-module-master.tar.gz
-Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{ngx_sorted_query_string_version}.tar.gz#/nginx-sorted-querystring-module-%{ngx_sorted_query_string_version}.tar.gz
-Source105: https://github.com/arut/nginx-rtmp-module/archive/master.tar.gz#/nginx-rtmp-module-master.tar.gz
-Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/master.tar.gz#/ngx_cache_purge-master.tar.gz
-Source107: https://github.com/replay/ngx_http_secure_download/archive/master.tar.gz#/ngx_http_secure_download-master.tar.gz
-Source108: https://github.com/replay/ngx_http_consistent_hash/archive/master.tar.gz#/ngx_http_consistent_hash-master.tar.gz
-Source109: https://github.com/openresty/srcache-nginx-module/archive/master.tar.gz#/srcache-nginx-module-master.tar.gz
-Source110: https://github.com/openresty/redis2-nginx-module/archive/master.tar.gz#/redis2-nginx-module-master.tar.gz
-Source111: https://github.com/openresty/memc-nginx-module/archive/master.tar.gz#/memc-nginx-module-master.tar.gz
-Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/master.tar.gz#/lua-upstream-nginx-module-master.tar.gz
-Source113: https://github.com/openresty/echo-nginx-module/archive/master.tar.gz#/echo-nginx-module-master.tar.gz
-Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/master.tar.gz#/ngx_http_enhanced_memcached_module-master.tar.gz
-Source115: https://github.com/arut/nginx-dav-ext-module/archive/master.tar.gz#/nginx-dav-ext-module-master.tar.gz
-Source116: https://github.com/simpl/ngx_devel_kit/archive/v%{ngx_devel_kit_version}.tar.gz#/ngx_devel_kit-%{ngx_devel_kit_version}.tar.gz
-Source117: https://github.com/openresty/set-misc-nginx-module/archive/v%{set_misc_nginx_version}.tar.gz#/set-misc-nginx-module-%{set_misc_nginx_version}.tar.gz
+Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
+Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
+Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
+Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
+Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
+Source107: https://github.com/replay/ngx_http_secure_download/archive/%{ngx_http_secure_download_commit}.tar.gz#/ngx_http_secure_download.tar.gz
+Source109: https://github.com/openresty/srcache-nginx-module/archive/%{srcache_nginx_module_commit}.tar.gz#/srcache-nginx-module.tar.gz
+Source110: https://github.com/openresty/redis2-nginx-module/archive/%{redis2_nginx_module_commit}.tar.gz#/redis2-nginx-module.tar.gz
+Source111: https://github.com/openresty/memc-nginx-module/archive/%{memc_nginx_module_commit}.tar.gz#/memc-nginx-module.tar.gz
+Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/%{lua_upstream_nginx_module_commit}.tar.gz#/lua-upstream-nginx-module.tar.gz
+Source113: https://github.com/openresty/echo-nginx-module/archive/%{echo_nginx_module_commit}.tar.gz#/echo-nginx-module.tar.gz
+Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/%{ngx_http_enhanced_memcached_module_commit}.tar.gz#/ngx_http_enhanced_memcached_module.tar.gz
+Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_module_commit}.tar.gz#/nginx-dav-ext-module.tar.gz
+Source116: https://github.com/simpl/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
+Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module.tar.gz
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
-Patch102: lua-upstream-cache-nginx-module.dynamic-module.patch
-Patch106: ngx_cache_purge.dynamic-module.patch
-Patch107: ngx_http_secure_download.dynamic-module.patch
-Patch108: ngx_http_consistent_hash.dynamic-module.patch
-Patch115: nginx-dav-ext.dynamic-module.patch
-
-# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
-Patch201: nginx-1.11.2-ssl_cert_cb_yield.patch
-# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_pending_session.patch
-Patch202: nginx-1.11.2-ssl_pending_session.patch
+Patch01: ngx_http_v2_upstream-01-of-14.patch
+Patch02: ngx_http_v2_upstream-02-of-14.patch
+Patch03: ngx_http_v2_upstream-03-of-14.patch
+Patch04: ngx_http_v2_upstream-04-of-14.patch
+Patch05: ngx_http_v2_upstream-05-of-14.patch
+Patch06: ngx_http_v2_upstream-06-of-14.patch
+Patch07: ngx_http_v2_upstream-07-of-14.patch
+Patch08: ngx_http_v2_upstream-08-of-14.patch
+Patch09: ngx_http_v2_upstream-09-of-14.patch
+Patch10: ngx_http_v2_upstream-10-of-14.patch
+Patch11: ngx_http_v2_upstream-12-of-14.patch
+Patch12: ngx_http_v2_upstream-13-of-14.patch
+Patch13: ngx_http_v2_upstream-14-of-14.patch
+Patch14: ngx_http_secure_download-dynamic_module.patch
+Patch15: ngx_cache_purge-dynamic_module.patch
+Patch16: ngx_cache_purge-fix_compatibility_with_nginx_1.11.6.patch
+Patch17: ngx_cache_purge-feat_purge_all.patch
+Patch18: ngx_cache_purge-feat_purge_partial_keys.patch
+Patch19: ngx_cache_purge-select_response_type.patch
+Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 
 License: 2-clause BSD-like license
 
@@ -129,14 +147,27 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 120
-%patch102 -d ./lua-upstream-cache-nginx-module-master -p1
-%patch106 -d ./ngx_cache_purge-master -p1
-%patch107 -d ./ngx_http_secure_download-master -p1
-%patch108 -d ./ngx_http_consistent_hash-master -p1
-%patch115 -d ./nginx-dav-ext-module-master -p1
-%patch201 -p1
-%patch202 -p1
+%setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 120
+%patch01 -p1
+%patch02 -p1
+%patch03 -p1
+%patch04 -p1
+%patch05 -p1
+%patch06 -p1
+%patch07 -p1
+%patch08 -p1
+%patch09 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -185,23 +216,21 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_hash_version} \
-        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
-        --add-dynamic-module=./headers-more-nginx-module-master \
-        --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-dynamic-module=./nginx-rtmp-module-master \
-        --add-dynamic-module=./ngx_cache_purge-master \
-        --add-dynamic-module=./ngx_http_secure_download-master \
-        --add-dynamic-module=./ngx_http_consistent_hash-master \
-        --add-dynamic-module=./redis2-nginx-module-master \
-        --add-dynamic-module=./srcache-nginx-module-master \
-        --add-dynamic-module=./memc-nginx-module-master \
-        --add-dynamic-module=./lua-upstream-nginx-module-master \
-        --add-dynamic-module=./echo-nginx-module-master \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
-        --add-dynamic-module=./nginx-dav-ext-module-master \
-        --add-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
-        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
+        --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./headers-more-nginx-module \
+        --add-dynamic-module=./nginx-sorted-querystring-module \
+        --add-dynamic-module=./nginx-rtmp-module \
+        --add-dynamic-module=./ngx_cache_purge \
+        --add-dynamic-module=./ngx_http_secure_download \
+        --add-dynamic-module=./redis2-nginx-module \
+        --add-dynamic-module=./srcache-nginx-module \
+        --add-dynamic-module=./memc-nginx-module \
+        --add-dynamic-module=./lua-upstream-nginx-module \
+        --add-dynamic-module=./echo-nginx-module \
+        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
+        --add-dynamic-module=./nginx-dav-ext-module \
+        --add-module=./ngx_devel_kit \
+        --add-dynamic-module=./set-misc-nginx-module \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -250,23 +279,21 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module-%{ngx_lua_hash_version} \
-        --add-dynamic-module=./lua-upstream-cache-nginx-module-master \
-        --add-dynamic-module=./headers-more-nginx-module-master \
-        --add-dynamic-module=./nginx-sorted-querystring-module-%{ngx_sorted_query_string_version} \
-        --add-dynamic-module=./nginx-rtmp-module-master \
-        --add-dynamic-module=./ngx_cache_purge-master \
-        --add-dynamic-module=./ngx_http_secure_download-master \
-        --add-dynamic-module=./ngx_http_consistent_hash-master \
-        --add-dynamic-module=./redis2-nginx-module-master \
-        --add-dynamic-module=./srcache-nginx-module-master \
-        --add-dynamic-module=./memc-nginx-module-master \
-        --add-dynamic-module=./lua-upstream-nginx-module-master \
-        --add-dynamic-module=./echo-nginx-module-master \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module-master \
-        --add-dynamic-module=./nginx-dav-ext-module-master \
-        --add-module=./ngx_devel_kit-%{ngx_devel_kit_version} \
-        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_version} \
+        --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./headers-more-nginx-module \
+        --add-dynamic-module=./nginx-sorted-querystring-module \
+        --add-dynamic-module=./nginx-rtmp-module \
+        --add-dynamic-module=./ngx_cache_purge \
+        --add-dynamic-module=./ngx_http_secure_download \
+        --add-dynamic-module=./redis2-nginx-module \
+        --add-dynamic-module=./srcache-nginx-module \
+        --add-dynamic-module=./memc-nginx-module \
+        --add-dynamic-module=./lua-upstream-nginx-module \
+        --add-dynamic-module=./echo-nginx-module \
+        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
+        --add-dynamic-module=./nginx-dav-ext-module \
+        --add-module=./ngx_devel_kit \
+        --add-dynamic-module=./set-misc-nginx-module \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
@@ -459,6 +486,26 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Aug  9 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.4-1
+- 1.13.4
+- echo_nginx_module d95da3500ae992b703f90dea926877b728818104
+- headers_more_nginx_module 7b0762aba64495e289c3f9cd7f0bd74d0051a980
+- lua_nginx_module cdd2ae921f67bf396c743406493127be496e57ce
+- lua_upstream_nginx_module a84fbbb3d3b07684c232f642eccbc5334bafcbfe
+- memc_nginx_module 31ba7ff6d53201f1afa0b6fff5d6233336168c83
+- redis2_nginx_module 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
+- set_misc_nginx_module 48908343c00a45a40365158282f61d5369d17194
+- srcache_nginx_module af82f755b8a92765fff0b3e70b26bedf4bbacadc
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit e443262071e759c047492be60ec7e2d73c5b57ec
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- Delete lua-nginx-cache-module
+- Delete replay/ngx_http_consistent_hash
+
 * Wed Jul 12 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.3-1
 - 1.13.3
 - Update ngx_lua_version commit hash cc0a793a27af48a364b951a374716b8cd5221487
