@@ -104,7 +104,6 @@ Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
 Patch106: ngx_cache_purge.dynamic-module.patch
 Patch107: ngx_http_secure_download.dynamic-module.patch
-Patch115: nginx-dav-ext.dynamic-module.patch
 
 # https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch201: nginx-1.11.2-ssl_cert_cb_yield.patch
@@ -136,7 +135,6 @@ a mail proxy server.
 %setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 120
 %patch106 -d ./ngx_cache_purge-%{ngx_cache_purge_commit} -p1
 %patch107 -d ./ngx_http_secure_download-%{ngx_http_secure_download_commit} -p1
-%patch115 -d ./nginx-dav-ext-module-%{nginx_dav_ext_module_commit} -p1
 %patch201 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
