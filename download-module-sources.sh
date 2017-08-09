@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ue
 download_github_repo() {
   local user=$1
   local repo=$2
@@ -8,7 +9,10 @@ download_github_repo() {
     if [ $commit = master ]; then
       commit=$(curl -sS https://api.github.com/repos/$user/$repo/commits/master | jq -r .sha)
     fi
-    curl -sSLo SOURCES/${repo}.tar.gz https://github.com/$user/$repo/archive/${commit}.tar.gz
+    mkdir ${repo}
+    curl -sSL https://github.com/$user/$repo/archive/${commit}.tar.gz | tar zxf - --strip-component 1 -C ${repo}
+    tar cf - ${repo} | gzip -9 > SOURCES/${repo}.tar.gz
+    rm -rf ${repo}
     echo "%define ${repo//-/_}_commit $commit"
   fi
 }

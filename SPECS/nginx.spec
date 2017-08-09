@@ -8,7 +8,7 @@
 
 %define echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
 %define headers_more_nginx_module_commit 7b0762aba64495e289c3f9cd7f0bd74d0051a980
-%define lua_nginx_module_commit 89de7802227fd97005cb03b5d1fc38b809093b70
+%define lua_nginx_module_commit cdd2ae921f67bf396c743406493127be496e57ce
 %define lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
 %define memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
 %define redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
@@ -216,21 +216,21 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module-%{lua_nginx_module_commit} \
-        --add-dynamic-module=./headers-more-nginx-module-%{headers_more_nginx_module_commit} \
-        --add-dynamic-module=./nginx-sorted-querystring-module-%{nginx_sorted_querystring_module_commit} \
-        --add-dynamic-module=./nginx-rtmp-module-%{nginx_rtmp_module_commit} \
-        --add-dynamic-module=./ngx_cache_purge-%{ngx_cache_purge_commit} \
-        --add-dynamic-module=./ngx_http_secure_download-%{ngx_http_secure_download_commit} \
-        --add-dynamic-module=./redis2-nginx-module-%{redis2_nginx_module_commit} \
-        --add-dynamic-module=./srcache-nginx-module-%{srcache_nginx_module_commit} \
-        --add-dynamic-module=./memc-nginx-module-%{memc_nginx_module_commit} \
-        --add-dynamic-module=./lua-upstream-nginx-module-%{lua_upstream_nginx_module_commit} \
-        --add-dynamic-module=./echo-nginx-module-%{echo_nginx_module_commit} \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module-%{ngx_http_enhanced_memcached_module_commit} \
-        --add-dynamic-module=./nginx-dav-ext-module-%{nginx_dav_ext_module_commit} \
-        --add-module=./ngx_devel_kit-%{ngx_devel_kit_commit} \
-        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_module_commit} \
+        --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./headers-more-nginx-module \
+        --add-dynamic-module=./nginx-sorted-querystring-module \
+        --add-dynamic-module=./nginx-rtmp-module \
+        --add-dynamic-module=./ngx_cache_purge \
+        --add-dynamic-module=./ngx_http_secure_download \
+        --add-dynamic-module=./redis2-nginx-module \
+        --add-dynamic-module=./srcache-nginx-module \
+        --add-dynamic-module=./memc-nginx-module \
+        --add-dynamic-module=./lua-upstream-nginx-module \
+        --add-dynamic-module=./echo-nginx-module \
+        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
+        --add-dynamic-module=./nginx-dav-ext-module \
+        --add-module=./ngx_devel_kit \
+        --add-dynamic-module=./set-misc-nginx-module \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -279,21 +279,21 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module-%{lua_nginx_module_commit} \
-        --add-dynamic-module=./headers-more-nginx-module-%{headers_more_nginx_module_commit} \
-        --add-dynamic-module=./nginx-sorted-querystring-module-%{nginx_sorted_querystring_module_commit} \
-        --add-dynamic-module=./nginx-rtmp-module-%{nginx_rtmp_module_commit} \
-        --add-dynamic-module=./ngx_cache_purge-%{ngx_cache_purge_commit} \
-        --add-dynamic-module=./ngx_http_secure_download-%{ngx_http_secure_download_commit} \
-        --add-dynamic-module=./redis2-nginx-module-%{redis2_nginx_module_commit} \
-        --add-dynamic-module=./srcache-nginx-module-%{srcache_nginx_module_commit} \
-        --add-dynamic-module=./memc-nginx-module-%{memc_nginx_module_commit} \
-        --add-dynamic-module=./lua-upstream-nginx-module-%{lua_upstream_nginx_module_commit} \
-        --add-dynamic-module=./echo-nginx-module-%{echo_nginx_module_commit} \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module-%{ngx_http_enhanced_memcached_module_commit} \
-        --add-dynamic-module=./nginx-dav-ext-module-%{nginx_dav_ext_module_commit} \
-        --add-module=./ngx_devel_kit-%{ngx_devel_kit_commit} \
-        --add-dynamic-module=./set-misc-nginx-module-%{set_misc_nginx_module_commit} \
+        --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./headers-more-nginx-module \
+        --add-dynamic-module=./nginx-sorted-querystring-module \
+        --add-dynamic-module=./nginx-rtmp-module \
+        --add-dynamic-module=./ngx_cache_purge \
+        --add-dynamic-module=./ngx_http_secure_download \
+        --add-dynamic-module=./redis2-nginx-module \
+        --add-dynamic-module=./srcache-nginx-module \
+        --add-dynamic-module=./memc-nginx-module \
+        --add-dynamic-module=./lua-upstream-nginx-module \
+        --add-dynamic-module=./echo-nginx-module \
+        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
+        --add-dynamic-module=./nginx-dav-ext-module \
+        --add-module=./ngx_devel_kit \
+        --add-dynamic-module=./set-misc-nginx-module \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
@@ -490,7 +490,7 @@ fi
 - 1.13.4
 - echo_nginx_module d95da3500ae992b703f90dea926877b728818104
 - headers_more_nginx_module 7b0762aba64495e289c3f9cd7f0bd74d0051a980
-- lua_nginx_module 89de7802227fd97005cb03b5d1fc38b809093b70
+- lua_nginx_module cdd2ae921f67bf396c743406493127be496e57ce
 - lua_upstream_nginx_module a84fbbb3d3b07684c232f642eccbc5334bafcbfe
 - memc_nginx_module 31ba7ff6d53201f1afa0b6fff5d6233336168c83
 - redis2_nginx_module 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
