@@ -108,8 +108,6 @@ Patch115: nginx-dav-ext.dynamic-module.patch
 
 # https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch201: nginx-1.11.2-ssl_cert_cb_yield.patch
-# https://raw.githubusercontent.com/openresty/openresty/dbccee1418ddb24a2adabd80b0737595b7fd577e/patches/nginx-1.11.2-ssl_pending_session.patch
-Patch202: nginx-1.11.2-ssl_pending_session.patch
 
 License: 2-clause BSD-like license
 
@@ -140,7 +138,6 @@ a mail proxy server.
 %patch107 -d ./ngx_http_secure_download-%{ngx_http_secure_download_commit} -p1
 %patch115 -d ./nginx-dav-ext-module-%{nginx_dav_ext_module_commit} -p1
 %patch201 -p1
-%patch202 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
