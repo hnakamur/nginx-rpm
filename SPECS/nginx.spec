@@ -84,21 +84,21 @@ Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module-%{lua_nginx_module_commit}.tar.gz
-Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module-%{headers_more_nginx_module_commit}.tar.gz
-Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module-%{nginx_sorted_querystring_module_commit}.tar.gz
-Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module-%{nginx_rtmp_module_commit}.tar.gz
-Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge-%{ngx_cache_purge_commit}.tar.gz
-Source107: https://github.com/replay/ngx_http_secure_download/archive/%{ngx_http_secure_download_commit}.tar.gz#/ngx_http_secure_download-%{ngx_http_secure_download_commit}.tar.gz
-Source109: https://github.com/openresty/srcache-nginx-module/archive/%{srcache_nginx_module_commit}.tar.gz#/srcache-nginx-module-%{srcache_nginx_module_commit}.tar.gz
-Source110: https://github.com/openresty/redis2-nginx-module/archive/%{redis2_nginx_module_commit}.tar.gz#/redis2-nginx-module-%{redis2_nginx_module_commit}.tar.gz
-Source111: https://github.com/openresty/memc-nginx-module/archive/%{memc_nginx_module_commit}.tar.gz#/memc-nginx-module-%{memc_nginx_module_commit}.tar.gz
-Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/%{lua_upstream_nginx_module_commit}.tar.gz#/lua-upstream-nginx-module-%{lua_upstream_nginx_module_commit}.tar.gz
-Source113: https://github.com/openresty/echo-nginx-module/archive/%{echo_nginx_module_commit}.tar.gz#/echo-nginx-module-%{echo_nginx_module_commit}.tar.gz
-Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/%{ngx_http_enhanced_memcached_module_commit}.tar.gz#/ngx_http_enhanced_memcached_module-%{ngx_http_enhanced_memcached_module_commit}.tar.gz
-Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_module_commit}.tar.gz#/nginx-dav-ext-module-%{nginx_dav_ext_module_commit}.tar.gz
-Source116: https://github.com/simpl/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit-%{ngx_devel_kit_commit}.tar.gz
-Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module-%{set_misc_nginx_module_commit}.tar.gz
+Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
+Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
+Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
+Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
+Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
+Source107: https://github.com/replay/ngx_http_secure_download/archive/%{ngx_http_secure_download_commit}.tar.gz#/ngx_http_secure_download.tar.gz
+Source109: https://github.com/openresty/srcache-nginx-module/archive/%{srcache_nginx_module_commit}.tar.gz#/srcache-nginx-module.tar.gz
+Source110: https://github.com/openresty/redis2-nginx-module/archive/%{redis2_nginx_module_commit}.tar.gz#/redis2-nginx-module.tar.gz
+Source111: https://github.com/openresty/memc-nginx-module/archive/%{memc_nginx_module_commit}.tar.gz#/memc-nginx-module.tar.gz
+Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/%{lua_upstream_nginx_module_commit}.tar.gz#/lua-upstream-nginx-module.tar.gz
+Source113: https://github.com/openresty/echo-nginx-module/archive/%{echo_nginx_module_commit}.tar.gz#/echo-nginx-module.tar.gz
+Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/%{ngx_http_enhanced_memcached_module_commit}.tar.gz#/ngx_http_enhanced_memcached_module.tar.gz
+Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_module_commit}.tar.gz#/nginx-dav-ext-module.tar.gz
+Source116: https://github.com/simpl/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
+Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module.tar.gz
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
