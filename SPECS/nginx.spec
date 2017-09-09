@@ -8,7 +8,7 @@
 
 %define echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
 %define headers_more_nginx_module_commit 7b0762aba64495e289c3f9cd7f0bd74d0051a980
-%define lua_nginx_module_commit cdd2ae921f67bf396c743406493127be496e57ce
+%define lua_nginx_module_commit 36d6ef406b98c63f2f47d1deb790fc8f32615e0f
 %define lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
 %define memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
 %define redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
@@ -19,7 +19,7 @@
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
 %define ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
 %define ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
-%define ngx_devel_kit_commit e443262071e759c047492be60ec7e2d73c5b57ec
+%define ngx_devel_kit_commit 440cdb0cefc8132c99674eac9dc531ee5ba7ddb2
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 
 %define luajit_inc /usr/include/luajit-2.1
@@ -66,7 +66,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.13.4
+Version: 1.13.5
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -486,6 +486,24 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sun Sep 10 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.5-1
+- 1.13.5
+- echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
+- headers_more_nginx_module_commit 7b0762aba64495e289c3f9cd7f0bd74d0051a980
+- lua_nginx_module_commit 36d6ef406b98c63f2f47d1deb790fc8f32615e0f
+- lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
+- memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
+- redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
+- set_misc_nginx_module_commit 48908343c00a45a40365158282f61d5369d17194
+- srcache_nginx_module_commit af82f755b8a92765fff0b3e70b26bedf4bbacadc
+- ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+- nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit_commit 440cdb0cefc8132c99674eac9dc531ee5ba7ddb2
+- nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+
 * Wed Aug  9 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.4-1
 - 1.13.4
 - echo_nginx_module d95da3500ae992b703f90dea926877b728818104

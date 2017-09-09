@@ -1,7 +1,8 @@
 FROM centos:7
 MAINTAINER Hiroaki Nakamura <hnakamur@gmail.com>
 
-RUN yum -y install mock rpm-build rpmdevtools patch sudo curl less scl-utils scl-utils-build \
+RUN yum -y install epel-release \
+ && yum -y install mock rpm-build rpmdevtools copr-cli patch sudo curl less scl-utils scl-utils-build \
  && useradd -G mock builder \
  && echo 'builder ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builder
 
