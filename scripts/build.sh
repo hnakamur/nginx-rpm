@@ -25,6 +25,7 @@ This rpm includes the following modules as dynamic modules:
 * [arut/nginx-dav-ext-module](https://github.com/arut/nginx-dav-ext-module)
 * [simpl/ngx_devel_kit](https://github.com/simpl/ngx_devel_kit)
 * [openresty/set-misc-nginx-module](https://github.com/openresty/set-misc-nginx-module)
+* [pandax381/ngx_http_pipelog_module](https://github.com/pandax381/ngx_http_pipelog_module)
 
 Warning: Modules may be added or deleted without notice.
 "
