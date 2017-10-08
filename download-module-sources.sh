@@ -26,6 +26,7 @@ download_github_repo openresty memc-nginx-module master
 download_github_repo openresty redis2-nginx-module master
 download_github_repo openresty set-misc-nginx-module master
 download_github_repo openresty srcache-nginx-module master
+download_github_repo openresty lua-resty-core master
 
 download_github_repo FRiCKLE ngx_cache_purge master
 download_github_repo arut nginx-rtmp-module master

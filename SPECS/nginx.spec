@@ -14,6 +14,7 @@
 %define redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
 %define set_misc_nginx_module_commit 48908343c00a45a40365158282f61d5369d17194
 %define srcache_nginx_module_commit af82f755b8a92765fff0b3e70b26bedf4bbacadc
+%define lua_resty_core_commit 3343ea159201da764e9a0f78f0857e5e7be11cf2
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
@@ -68,7 +69,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.13.5
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -101,6 +102,7 @@ Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_
 Source116: https://github.com/simpl/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
 Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module.tar.gz
 Source118: https://github.com/pandax381/ngx_http_pipelog_module/archive/%{ngx_http_pipelog_module_commit}.tar.gz#/ngx_http_pipelog_module.tar.gz
+Source119: https://github.com/openresty/lua-resty-core/archive/%{lua_nginx_module_commit}.tar.gz#/lua-resty-core.tar.gz
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
@@ -149,7 +151,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 120
+%setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
 %patch01 -p1
 %patch02 -p1
 %patch03 -p1
@@ -321,6 +323,9 @@ make %{?_smp_mflags}
 cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     %{__ln_s} ../..%{_libdir}/nginx/modules modules && cd -
 
+%{__mkdir} -p $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-core/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 %{__install} -m 644 -p %{SOURCE12} \
     $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}/
@@ -407,6 +412,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %dir %{_libdir}/nginx
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
+%attr(0755,root,root) %dir %{_prefix}/lib/nginx/lua
+%{_prefix}/lib/nginx/lua/*
 %dir %{_datadir}/nginx
 %dir %{_datadir}/nginx/html
 %{_datadir}/nginx/html/*
@@ -490,6 +497,26 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Sun Oct  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.5-4
+- Add lua-resty-core
+- echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
+- headers_more_nginx_module_commit d63cf91edcfa65a92eb0474d0d6fea7280abb0c6
+- lua_nginx_module_commit f829065b794025c856c9f86d469395e464e782ed
+- lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
+- memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
+- redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
+- set_misc_nginx_module_commit 48908343c00a45a40365158282f61d5369d17194
+- srcache_nginx_module_commit af82f755b8a92765fff0b3e70b26bedf4bbacadc
+- lua_resty_core_commit 3343ea159201da764e9a0f78f0857e5e7be11cf2
+- ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+- nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit_commit 440cdb0cefc8132c99674eac9dc531ee5ba7ddb2
+- nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+
 * Sun Oct  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.5-3
 - echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
 - headers_more_nginx_module_commit d63cf91edcfa65a92eb0474d0d6fea7280abb0c6
