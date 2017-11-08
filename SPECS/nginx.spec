@@ -69,7 +69,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.13.6
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -474,7 +474,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Wed Nov  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.6-2
+* Wed Nov  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.6-3
 - 1.13.6
 - OpenSSL 1.0.2m
 - Add openresty/stream-lua-nginx-module since it is now neede by lua-nginx-module.
