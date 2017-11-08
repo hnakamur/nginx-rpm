@@ -189,7 +189,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-http_image_filter_module=dynamic \
         --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream=dynamic \
+        --with-stream \
         --with-stream_ssl_module \
         --with-http_slice_module \
         --with-mail=dynamic \
@@ -254,7 +254,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-http_image_filter_module=dynamic \
         --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream=dynamic \
+        --with-stream \
         --with-stream_ssl_module \
         --with-http_slice_module \
         --with-mail=dynamic \
@@ -479,6 +479,7 @@ fi
 - OpenSSL 1.0.2m
 - Add openresty/stream-lua-nginx-module since it is now neede by lua-nginx-module.
   https://github.com/openresty/lua-nginx-module/commit/7730490c1e98a5867da77dc72814fc896000a769
+- Build stream as static module to pass build of stream-lua-nginx-module.
 - echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
 - headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
 - lua_nginx_module_commit b2aae31a85be4b51469ae8f7a128743e6e633b05
