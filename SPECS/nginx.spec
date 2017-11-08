@@ -14,6 +14,7 @@
 %define redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
 %define set_misc_nginx_module_commit 0112cf0bca7f2ce1c608ac692515204a254f942c
 %define srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
+%define stream_lua_nginx_module_commit 3c89e16cc8a29ef26bafc9a60a7c2c8f5ea5e30a
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
@@ -87,6 +88,7 @@ Source12: COPYRIGHT
 
 Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
+Source102: https://github.com/openresty/stream-lua-nginx-module/archive/%{stream_lua_nginx_module_commit}.tar.gz#/stream-lua-nginx-module.tar.gz
 Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
 Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
@@ -137,7 +139,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
+%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -194,6 +196,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail_ssl_module \
         --with-file-aio \
         --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./stream-lua-nginx-module \
         --add-dynamic-module=./headers-more-nginx-module \
         --add-dynamic-module=./nginx-sorted-querystring-module \
         --add-dynamic-module=./nginx-rtmp-module \
@@ -258,6 +261,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail_ssl_module \
         --with-file-aio \
         --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./stream-lua-nginx-module \
         --add-dynamic-module=./headers-more-nginx-module \
         --add-dynamic-module=./nginx-sorted-querystring-module \
         --add-dynamic-module=./nginx-rtmp-module \
@@ -473,6 +477,8 @@ fi
 * Wed Nov  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.6-2
 - 1.13.6
 - OpenSSL 1.0.2m
+- Add openresty/stream-lua-nginx-module since it is now neede by lua-nginx-module.
+  https://github.com/openresty/lua-nginx-module/commit/7730490c1e98a5867da77dc72814fc896000a769
 - echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
 - headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
 - lua_nginx_module_commit b2aae31a85be4b51469ae8f7a128743e6e633b05
@@ -481,6 +487,7 @@ fi
 - redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
 - set_misc_nginx_module_commit 0112cf0bca7f2ce1c608ac692515204a254f942c
 - srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
+- stream_lua_nginx_module_commit 3c89e16cc8a29ef26bafc9a60a7c2c8f5ea5e30a
 - ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 - nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
 - nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
