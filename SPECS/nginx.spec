@@ -4,16 +4,17 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.0.2l
+%define ngx_openssl_version 1.0.2m
 
-%define echo_nginx_module_commit d95da3500ae992b703f90dea926877b728818104
-%define headers_more_nginx_module_commit d63cf91edcfa65a92eb0474d0d6fea7280abb0c6
-%define lua_nginx_module_commit 8dd4bdef6f78495bdc1a7cce92eed494a70cc0af
-%define lua_upstream_nginx_module_commit a84fbbb3d3b07684c232f642eccbc5334bafcbfe
-%define memc_nginx_module_commit 31ba7ff6d53201f1afa0b6fff5d6233336168c83
-%define redis2_nginx_module_commit 5ae5a74b0ac205638805a2f6f48bb1d70b1c7038
-%define set_misc_nginx_module_commit 48908343c00a45a40365158282f61d5369d17194
-%define srcache_nginx_module_commit af82f755b8a92765fff0b3e70b26bedf4bbacadc
+%define echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
+%define headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
+%define lua_nginx_module_commit b2aae31a85be4b51469ae8f7a128743e6e633b05
+%define lua_upstream_nginx_module_commit 9610123819cf324fcdad7b907187d5a4f70bb07a
+%define memc_nginx_module_commit 1d8ef84616e13b64d6021b3ab0c24f40ea09f750
+%define redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
+%define set_misc_nginx_module_commit 0112cf0bca7f2ce1c608ac692515204a254f942c
+%define srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
+%define stream_lua_nginx_module_commit 3c89e16cc8a29ef26bafc9a60a7c2c8f5ea5e30a
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
@@ -68,7 +69,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.13.6
-Release: 1%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -87,6 +88,7 @@ Source12: COPYRIGHT
 
 Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
+Source102: https://github.com/openresty/stream-lua-nginx-module/archive/%{stream_lua_nginx_module_commit}.tar.gz#/stream-lua-nginx-module.tar.gz
 Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
 Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
@@ -137,7 +139,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
+%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -187,13 +189,14 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-http_image_filter_module=dynamic \
         --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream=dynamic \
+        --with-stream \
         --with-stream_ssl_module \
         --with-http_slice_module \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./stream-lua-nginx-module \
         --add-dynamic-module=./headers-more-nginx-module \
         --add-dynamic-module=./nginx-sorted-querystring-module \
         --add-dynamic-module=./nginx-rtmp-module \
@@ -251,13 +254,14 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-http_image_filter_module=dynamic \
         --with-http_geoip_module=dynamic \
         --with-threads \
-        --with-stream=dynamic \
+        --with-stream \
         --with-stream_ssl_module \
         --with-http_slice_module \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
         --add-dynamic-module=./lua-nginx-module \
+        --add-dynamic-module=./stream-lua-nginx-module \
         --add-dynamic-module=./headers-more-nginx-module \
         --add-dynamic-module=./nginx-sorted-querystring-module \
         --add-dynamic-module=./nginx-rtmp-module \
@@ -470,6 +474,30 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Nov  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.6-3
+- 1.13.6
+- OpenSSL 1.0.2m
+- Add openresty/stream-lua-nginx-module since it is now neede by lua-nginx-module.
+  https://github.com/openresty/lua-nginx-module/commit/7730490c1e98a5867da77dc72814fc896000a769
+- Build stream as static module to pass build of stream-lua-nginx-module.
+- echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
+- headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
+- lua_nginx_module_commit b2aae31a85be4b51469ae8f7a128743e6e633b05
+- lua_upstream_nginx_module_commit 9610123819cf324fcdad7b907187d5a4f70bb07a
+- memc_nginx_module_commit 1d8ef84616e13b64d6021b3ab0c24f40ea09f750
+- redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
+- set_misc_nginx_module_commit 0112cf0bca7f2ce1c608ac692515204a254f942c
+- srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
+- stream_lua_nginx_module_commit 3c89e16cc8a29ef26bafc9a60a7c2c8f5ea5e30a
+- ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module_commit 43f1e4209b7ee7b795595912943a8fdc37f2ea4a
+- nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit_commit 440cdb0cefc8132c99674eac9dc531ee5ba7ddb2
+- nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+
 * Wed Oct 11 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.6-1
 - 1.13.6
 - Remove ngx_http_v2 patches
