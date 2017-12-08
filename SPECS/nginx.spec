@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.0.2m
+%define ngx_openssl_version 1.0.2n
 
 %define echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
 %define headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
@@ -69,7 +69,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.13.7
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -474,6 +474,26 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Dec  8 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.7-2
+- OpenSSL 1.0.2n
+- echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
+- headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
+- lua_nginx_module_commit 18b5de576c13ed19f88ad3844c36776f23fbb61f
+- lua_upstream_nginx_module_commit 9610123819cf324fcdad7b907187d5a4f70bb07a
+- memc_nginx_module_commit 1d8ef84616e13b64d6021b3ab0c24f40ea09f750
+- redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
+- set_misc_nginx_module_commit 0112cf0bca7f2ce1c608ac692515204a254f942c
+- srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
+- stream_lua_nginx_module_commit 4557314ed4b2b2a993afb78c46504efbd9688b41
+- ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit_commit 440cdb0cefc8132c99674eac9dc531ee5ba7ddb2
+- nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+
 * Mon Dec  4 2017 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.7-1
 - 1.13.7
 - echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
