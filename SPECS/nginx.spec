@@ -6,21 +6,22 @@
 
 %define ngx_openssl_version 1.0.2n
 
-%define echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
+%define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
 %define headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
-%define lua_nginx_module_commit d125123f8be3db55ab57bf0206ad086c9ff43934
+%define lua_nginx_module_commit 3cde1d8aa1887e8b76356013a24a7602440d283e
 %define lua_upstream_nginx_module_commit 9610123819cf324fcdad7b907187d5a4f70bb07a
-%define memc_nginx_module_commit 1d8ef84616e13b64d6021b3ab0c24f40ea09f750
-%define redis2_nginx_module_commit 0402a28467b8532e7a892bbdb8213a7654f872b4
+%define memc_nginx_module_commit 66de925b7da5931badf24c7e675e2ee62c697069
+%define redis2_nginx_module_commit 4b7ff9bdf669d487efd32ac3d06d3ee981f5a2f6
 %define set_misc_nginx_module_commit cda7e5086b56047f3f9d65b6339976f453e8f8f8
-%define srcache_nginx_module_commit b741f55e32b66120fbe380f203e4ed7e96235d1f
-%define stream_lua_nginx_module_commit 73bbadce5c32069d2d8fa690299dff85663fa5b2
+%define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
+%define lua_resty_core_commit a0a404f6f14d615789012598c5a7f161f46cf40c
+%define stream_lua_nginx_module_commit d4757341ef2e5ec7faa4224c7830386f32bddd6a
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
 %define ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
 %define ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
-%define ngx_devel_kit_commit 3358655ea454bbbedda5ae65d77d95cad0e26772
+%define ngx_devel_kit_commit a22dade76c838e5f377d58d007f65d35b5ce1df3
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 %define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
 
@@ -68,7 +69,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.13.8
+Version: 1.13.9
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -100,7 +101,7 @@ Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/%{lua_
 Source113: https://github.com/openresty/echo-nginx-module/archive/%{echo_nginx_module_commit}.tar.gz#/echo-nginx-module.tar.gz
 Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/%{ngx_http_enhanced_memcached_module_commit}.tar.gz#/ngx_http_enhanced_memcached_module.tar.gz
 Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_module_commit}.tar.gz#/nginx-dav-ext-module.tar.gz
-Source116: https://github.com/simpl/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
+Source116: https://github.com/simplresty/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
 Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module.tar.gz
 Source118: https://github.com/pandax381/ngx_http_pipelog_module/archive/%{ngx_http_pipelog_module_commit}.tar.gz#/ngx_http_pipelog_module.tar.gz
 Source119: https://github.com/openresty/lua-resty-core/archive/%{lua_nginx_module_commit}.tar.gz#/lua-resty-core.tar.gz
@@ -474,6 +475,27 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Feb 21 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.9-1
+- 1.13.9
+- echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
+- lua_nginx_module_commit 3cde1d8aa1887e8b76356013a24a7602440d283e
+- lua_upstream_nginx_module_commit 9610123819cf324fcdad7b907187d5a4f70bb07a
+- memc_nginx_module_commit 66de925b7da5931badf24c7e675e2ee62c697069
+- redis2_nginx_module_commit 4b7ff9bdf669d487efd32ac3d06d3ee981f5a2f6
+- set_misc_nginx_module_commit cda7e5086b56047f3f9d65b6339976f453e8f8f8
+- srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core_commit a0a404f6f14d615789012598c5a7f161f46cf40c
+- stream_lua_nginx_module_commit d4757341ef2e5ec7faa4224c7830386f32bddd6a
+- ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module_commit a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit_commit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+
 * Mon Jan 15 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.8-1
 - 1.13.8
 - echo_nginx_module_commit 7365fb01fd7c5630eeb298d43959a84fc629791a
