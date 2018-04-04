@@ -69,7 +69,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.13.10
+Version: 1.13.11
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -475,6 +475,27 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Thu Apr  5 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.11-1
+- 1.13.11
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module 91a0ad236c9661f38b78cdc99e05025f7ce5cccb
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 66de925b7da5931badf24c7e675e2ee62c697069
+- redis2_nginx_module 4b7ff9bdf669d487efd32ac3d06d3ee981f5a2f6
+- set_misc_nginx_module 77ae35bfb00e81196d8dbae48c359e1d591a8d01
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core 6ea0dea70647a54c68ca02be47c3deb83b15a6ad
+- stream_lua_nginx_module a9e856564ccae54a43f27d909ce9af80064f5688
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module a9b76b6c9e0623e3ee84fecb04284dc8c91dfdb4
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+
 * Mon Apr  2 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.13.10-1
 - 1.13.10
 - OpenSSL Update to 1.0.2o
