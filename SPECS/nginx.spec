@@ -8,14 +8,14 @@
 
 %define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
 %define headers_more_nginx_module_commit a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
-%define lua_nginx_module_commit 55743aeba3075b34a250380b32bad6366eae6c30
+%define lua_nginx_module_commit 576a10d246daf81c0ce1b959c50ee807769c01a8
 %define lua_upstream_nginx_module_commit 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
 %define memc_nginx_module_commit 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
 %define redis2_nginx_module_commit c989c829a2877132cb100f901e320921250e068d
 %define set_misc_nginx_module_commit aac9afe4c42d96e35d496994c552839799010255
 %define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
-%define lua_resty_core_commit 2e8b0450775ef1d066ef14eda495817614a4427d
-%define stream_lua_nginx_module_commit 87863ca2bfb35219ecea43c2c14a15e6c882a036
+%define lua_resty_core_commit 1d5c898e3574d7c38ef2d8d905e8481f9cfd5aaa
+%define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
@@ -24,6 +24,7 @@
 %define ngx_devel_kit_commit a22dade76c838e5f377d58d007f65d35b5ce1df3
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 %define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+%define nginx_http_shibboleth_commit b441df08887fc10e44cc047da2a188014a0dadf5
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -70,7 +71,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.15.0
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -90,6 +91,7 @@ Source12: COPYRIGHT
 Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
 Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
 Source102: https://github.com/openresty/stream-lua-nginx-module/archive/%{stream_lua_nginx_module_commit}.tar.gz#/stream-lua-nginx-module.tar.gz
+Source103: https://github.com/nginx-shib/nginx-http-shibboleth/archive/%{nginx_http_shibboleth_commit}.tar.gz#/nginx-http-shibboleth.tar.gz
 Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
 Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
 Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
@@ -140,7 +142,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -213,6 +215,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-module=./ngx_devel_kit \
         --add-dynamic-module=./set-misc-nginx-module \
         --add-dynamic-module=./ngx_http_pipelog_module \
+        --add-dynamic-module=./nginx-http-shibboleth \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -278,6 +281,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-module=./ngx_devel_kit \
         --add-dynamic-module=./set-misc-nginx-module \
         --add-dynamic-module=./ngx_http_pipelog_module \
+        --add-dynamic-module=./nginx-http-shibboleth \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
@@ -475,6 +479,28 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jun 27 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.0-2
+- Add github.com/nginx-shib/nginx-http-shibboleth module
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module 576a10d246daf81c0ce1b959c50ee807769c01a8
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module aac9afe4c42d96e35d496994c552839799010255
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core 1d5c898e3574d7c38ef2d8d905e8481f9cfd5aaa
+- stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+- nginx_http_shibboleth b441df08887fc10e44cc047da2a188014a0dadf5
+
 * Wed Jun  6 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.0-1
 - 1.15.0
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
