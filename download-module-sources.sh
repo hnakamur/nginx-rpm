@@ -37,3 +37,4 @@ download_github_repo replay ngx_http_secure_download master
 download_github_repo simplresty ngx_devel_kit master
 download_github_repo wandenberg nginx-sorted-querystring-module master
 download_github_repo pandax381 ngx_http_pipelog_module master
+download_github_repo nginx-shib nginx-http-shibboleth master
