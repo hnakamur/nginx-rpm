@@ -71,7 +71,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.15.0
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -355,6 +355,11 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__install} -m755 %{_builddir}/%{name}-%{version}/objs/nginx-debug \
     $RPM_BUILD_ROOT%{_sbindir}/nginx-debug
 
+%{__install} -m644 \
+    %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_clear_headers \
+    %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_fastcgi_params \
+    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/
+
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
 
@@ -374,6 +379,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/scgi_params
 %config(noreplace) %{_sysconfdir}/nginx/uwsgi_params
+%config(noreplace) %{_sysconfdir}/nginx/shib_clear_headers
+%config(noreplace) %{_sysconfdir}/nginx/shib_fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/koi-utf
 %config(noreplace) %{_sysconfdir}/nginx/koi-win
 %config(noreplace) %{_sysconfdir}/nginx/win-utf
@@ -479,6 +486,10 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Fri Jun 29 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.0-3
+* Include shib_fastcgi_params and shib_clear_headers
+  from nginx_http_shibboleth module.
+
 * Wed Jun 27 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.0-2
 - Add github.com/nginx-shib/nginx-http-shibboleth module
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
