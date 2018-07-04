@@ -71,8 +71,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.15.0
-Release: 3%{?dist}.ngx
+Version: 1.15.1
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -489,6 +489,29 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul  4 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.1-1
+- 1.15.1
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module 576a10d246daf81c0ce1b959c50ee807769c01a8
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module aac9afe4c42d96e35d496994c552839799010255
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core 1d5c898e3574d7c38ef2d8d905e8481f9cfd5aaa
+- stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+- lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+- nginx_http_shibboleth b441df08887fc10e44cc047da2a188014a0dadf5
+
 * Fri Jun 29 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.0-3
 - Include shib_fastcgi_params and shib_clear_headers
   from nginx_http_shibboleth module.
