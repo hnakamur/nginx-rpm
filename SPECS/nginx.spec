@@ -166,7 +166,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
-        --modules-path=%{_libdir}/nginx/modules \
+        --modules-path=%{_libdir}/nginx/modules-debug \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -228,6 +228,9 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
         %{_builddir}/%{name}-%{version}/objs/nginx-debug
+%{__mkdir} %{_builddir}/%{name}-%{version}/objs-debug
+%{__mv} %{_builddir}/%{name}-%{version}/objs/*.so \
+        %{_builddir}/%{name}-%{version}/objs-debug
 LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
@@ -309,6 +312,9 @@ make %{?_smp_mflags}
 %{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
 cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     %{__ln_s} ../..%{_libdir}/nginx/modules modules && cd -
+%{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug
+cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+    %{__ln_s} ../..%{_libdir}/nginx/modules-debug modules-debug && cd -
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-core/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
@@ -361,6 +367,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 
 %{__install} -m755 %{_builddir}/%{name}-%{version}/objs/nginx-debug \
     $RPM_BUILD_ROOT%{_sbindir}/nginx-debug
+%{__install} -m755 %{_builddir}/%{name}-%{version}/objs-debug/*.so \
+    $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug/
 
 %{__install} -m644 \
     %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_clear_headers \
@@ -379,6 +387,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %dir %{_sysconfdir}/nginx
 %dir %{_sysconfdir}/nginx/conf.d
 %{_sysconfdir}/nginx/modules
+%{_sysconfdir}/nginx/modules-debug
 
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf
@@ -408,6 +417,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %dir %{_libdir}/nginx
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
+%attr(0755,root,root) %dir %{_libdir}/nginx/modules-debug
+%attr(0755,root,root) %{_libdir}/nginx/modules-debug/*.so
 %attr(0755,root,root) %dir %{_prefix}/lib/nginx/lua
 %{_prefix}/lib/nginx/lua/*
 %dir %{_datadir}/nginx
@@ -495,6 +506,7 @@ fi
 %changelog
 * Wed Jul 11 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.2-1
 - 1.15.2
+- Install debug build modules to %{_libdir}/nginx/modules-debug
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
 - headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
 - lua_nginx_module e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
