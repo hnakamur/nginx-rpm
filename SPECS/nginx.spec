@@ -8,16 +8,16 @@
 
 %define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
 %define headers_more_nginx_module_commit a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
-%define lua_nginx_module_commit 576a10d246daf81c0ce1b959c50ee807769c01a8
+%define lua_nginx_module_commit e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
 %define lua_upstream_nginx_module_commit 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
 %define memc_nginx_module_commit 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
 %define redis2_nginx_module_commit c989c829a2877132cb100f901e320921250e068d
 %define set_misc_nginx_module_commit aac9afe4c42d96e35d496994c552839799010255
 %define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
-%define lua_resty_core_commit 1d5c898e3574d7c38ef2d8d905e8481f9cfd5aaa
+%define lua_resty_core_commit bdbac701eb017370775f7333979922041021aeee
 %define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
 %define lua_resty_cookie_commit 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
-%define lua_resty_http_commit 0e8ac2dc767447f48ec964ba3901caa8dfb3ec06
+%define lua_resty_http_commit 75e30060863d41df47c95a5b54e1458954e98792
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
 %define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
@@ -72,8 +72,8 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.15.1
-Release: 2%{?dist}.ngx
+Version: 1.15.2
+Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -166,7 +166,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
-        --modules-path=%{_libdir}/nginx/modules \
+        --modules-path=%{_libdir}/nginx/modules-debug \
         --conf-path=%{_sysconfdir}/nginx/nginx.conf \
         --error-log-path=%{_localstatedir}/log/nginx/error.log \
         --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -228,6 +228,9 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
         %{_builddir}/%{name}-%{version}/objs/nginx-debug
+%{__mkdir} %{_builddir}/%{name}-%{version}/objs-debug
+%{__mv} %{_builddir}/%{name}-%{version}/objs/*.so \
+        %{_builddir}/%{name}-%{version}/objs-debug
 LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
@@ -309,6 +312,9 @@ make %{?_smp_mflags}
 %{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
 cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     %{__ln_s} ../..%{_libdir}/nginx/modules modules && cd -
+%{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug
+cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
+    %{__ln_s} ../..%{_libdir}/nginx/modules-debug modules-debug && cd -
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-core/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
@@ -361,6 +367,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 
 %{__install} -m755 %{_builddir}/%{name}-%{version}/objs/nginx-debug \
     $RPM_BUILD_ROOT%{_sbindir}/nginx-debug
+%{__install} -m755 %{_builddir}/%{name}-%{version}/objs-debug/*.so \
+    $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug/
 
 %{__install} -m644 \
     %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_clear_headers \
@@ -379,6 +387,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %dir %{_sysconfdir}/nginx
 %dir %{_sysconfdir}/nginx/conf.d
 %{_sysconfdir}/nginx/modules
+%{_sysconfdir}/nginx/modules-debug
 
 %config(noreplace) %{_sysconfdir}/nginx/nginx.conf
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/default.conf
@@ -408,6 +417,8 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %dir %{_libdir}/nginx
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
+%attr(0755,root,root) %dir %{_libdir}/nginx/modules-debug
+%attr(0755,root,root) %{_libdir}/nginx/modules-debug/*.so
 %attr(0755,root,root) %dir %{_prefix}/lib/nginx/lua
 %{_prefix}/lib/nginx/lua/*
 %dir %{_datadir}/nginx
@@ -493,6 +504,31 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul 11 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.2-1
+- 1.15.2
+- Install debug build modules to %{_libdir}/nginx/modules-debug
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module aac9afe4c42d96e35d496994c552839799010255
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core bdbac701eb017370775f7333979922041021aeee
+- stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+- lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
+- lua_resty_http 75e30060863d41df47c95a5b54e1458954e98792
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+- nginx_http_shibboleth b441df08887fc10e44cc047da2a188014a0dadf5
+
 * Wed Jul 11 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.1-2
 - Add pintsized/lua-resty-http
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
