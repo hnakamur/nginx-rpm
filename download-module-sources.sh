@@ -28,6 +28,7 @@ download_github_repo openresty set-misc-nginx-module master
 download_github_repo openresty srcache-nginx-module master
 download_github_repo openresty lua-resty-core master
 download_github_repo openresty stream-lua-nginx-module master
+download_github_repo openresty lua-resty-string master
 download_github_repo cloudflare lua-resty-cookie master
 download_github_repo pintsized lua-resty-http master
 
@@ -40,3 +41,7 @@ download_github_repo simplresty ngx_devel_kit master
 download_github_repo wandenberg nginx-sorted-querystring-module master
 download_github_repo pandax381 ngx_http_pipelog_module master
 download_github_repo nginx-shib nginx-http-shibboleth master
+download_github_repo hnakamur lua-resty-saml-service-provider master
+download_github_repo hnakamur lua-resty-session master
+download_github_repo hamishforbes lua-ffi-zlib master
+download_github_repo Phrogz SLAXML master
