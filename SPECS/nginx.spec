@@ -16,6 +16,7 @@
 %define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
 %define lua_resty_core_commit bdbac701eb017370775f7333979922041021aeee
 %define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+%define lua_resty_string_commit 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
 %define lua_resty_cookie_commit 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
 %define lua_resty_http_commit 75e30060863d41df47c95a5b54e1458954e98792
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
@@ -27,6 +28,10 @@
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 %define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
 %define nginx_http_shibboleth_commit b441df08887fc10e44cc047da2a188014a0dadf5
+%define nginx_lua_saml_service_provider_commit 04a8feab7bf8383daf61bafa512bd76b30b32506
+%define nginx_lua_session_commit 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
+%define lua_ffi_zlib_commit 3d6dbee710b4712b8d0e0235425abee04a22b1bd
+%define SLAXML_commit 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -73,7 +78,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.15.2
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -114,6 +119,12 @@ Source119: https://github.com/openresty/lua-resty-core/archive/%{lua_nginx_modul
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
 
 Source121: https://github.com/pintsized/lua-resty-http/archive/%{lua_resty_http_commit}.tar.gz#/lua-resty-http.tar.gz
+Source122: strings://github.com/openresty/lua-resty-string/archive/%{lua_resty_string_commit}.tar.gz#/lua-resty-string.tar.gz
+Source123: strings://github.com/hnakamur/nginx-lua-saml-service-provider/archive/%{nginx_lua_saml_service_provider_commit}.tar.gz#/nginx-lua-saml-service-provider.tar.gz
+Source124: strings://github.com/hnakamur/nginx-lua-session/archive/%{nginx_lua_session_commit}.tar.gz#/nginx-lua-session.tar.gz
+Source125: strings://github.com/hamishforbes/lua-ffi-zlib/archive/%{lua_ffi_zlib_commit}.tar.gz#/lua-ffi-zlib.tar.gz
+Source126: strings://github.com/Phrogz/SLAXML/archive/%{SLAXML_commit}.tar.gz#/SLAXML.tar.gz
+
 
 Patch14: ngx_http_secure_download-dynamic_module.patch
 Patch15: ngx_cache_purge-dynamic_module.patch
@@ -147,7 +158,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -320,6 +331,11 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-core/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-cookie/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-http/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-string/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-saml-service-provider/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-session/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-ffi-zlib/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/SLAXML/*.lua $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 %{__install} -m 644 -p %{SOURCE12} \
@@ -504,6 +520,35 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Mon Jul 30 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.2-2
+- Add my SAML service provider and dependencies
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module aac9afe4c42d96e35d496994c552839799010255
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core bdbac701eb017370775f7333979922041021aeee
+- stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+- lua_resty_string 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
+- lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
+- lua_resty_http 75e30060863d41df47c95a5b54e1458954e98792
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+- nginx_http_shibboleth b441df08887fc10e44cc047da2a188014a0dadf5
+- nginx_lua_saml_service_provider 04a8feab7bf8383daf61bafa512bd76b30b32506
+- nginx_lua_session 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
+- lua_ffi_zlib 3d6dbee710b4712b8d0e0235425abee04a22b1bd
+- SLAXML 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
+
 * Wed Jul 11 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.2-1
 - 1.15.2
 - Install debug build modules to %{_libdir}/nginx/modules-debug

@@ -1,47 +1,64 @@
 #!/bin/bash
 set -ue
-download_github_repo() {
-  local user=$1
-  local repo=$2
-  local commit=$3
 
-  if [ ! -d $repo ]; then
-    if [ $commit = master ]; then
-      commit=$(curl -sS https://api.github.com/repos/$user/$repo/commits/master | jq -r .sha)
-    fi
+# Usage: download_github_repo -b branch user/repo
+#     or download_github_repo -c commit user/repo
+download_github_repo() {
+  local branch_or_commit_opt=$1
+  local branch_or_commit=$2
+  local user_repo=$3
+
+  local user=${user_repo%%/*}
+  local repo=${user_repo##*/}
+
+  if [ -d $repo ]; then
+    rm -rf ${repo}
+  fi
+
+  local commit
+  case "$branch_or_commit_opt" in
+  -b)
+    git clone --depth 1 -b ${branch_or_commit} https://github.com/${user}/${repo}.git > /dev/null 2>&1
+    commit=$(cd ${repo} && git rev-parse HEAD)
+    rm -rf ${repo}/.git
+    ;;
+  -c)
     mkdir ${repo}
     curl -sSL https://github.com/$user/$repo/archive/${commit}.tar.gz | tar zxf - --strip-component 1 -C ${repo}
-    tar cf - ${repo} | gzip -9 > SOURCES/${repo}.tar.gz
-    rm -rf ${repo}
-    echo "%define ${repo//-/_}_commit $commit"
-  fi
+    commit=${branch_or_commit}
+    ;;
+  esac
+
+  tar cf - ${repo} | gzip -9 > SOURCES/${repo}.tar.gz
+  rm -rf ${repo}
+  echo "%define ${repo//-/_}_commit $commit"
 }
 
 
-download_github_repo openresty echo-nginx-module master
-download_github_repo openresty headers-more-nginx-module master
-download_github_repo openresty lua-nginx-module master
-download_github_repo openresty lua-upstream-nginx-module master
-download_github_repo openresty memc-nginx-module master
-download_github_repo openresty redis2-nginx-module master
-download_github_repo openresty set-misc-nginx-module master
-download_github_repo openresty srcache-nginx-module master
-download_github_repo openresty lua-resty-core master
-download_github_repo openresty stream-lua-nginx-module master
-download_github_repo openresty lua-resty-string master
-download_github_repo cloudflare lua-resty-cookie master
-download_github_repo pintsized lua-resty-http master
+download_github_repo -b master openresty/echo-nginx-module
+download_github_repo -b master openresty/headers-more-nginx-module
+download_github_repo -b master openresty/lua-nginx-module
+download_github_repo -b master openresty/lua-upstream-nginx-module
+download_github_repo -b master openresty/memc-nginx-module
+download_github_repo -b master openresty/redis2-nginx-module
+download_github_repo -b master openresty/set-misc-nginx-module
+download_github_repo -b master openresty/srcache-nginx-module
+download_github_repo -b master openresty/lua-resty-core
+download_github_repo -b master openresty/stream-lua-nginx-module
+download_github_repo -b master openresty/lua-resty-string
+download_github_repo -b master cloudflare/lua-resty-cookie
+download_github_repo -b master pintsized/lua-resty-http
 
-download_github_repo FRiCKLE ngx_cache_purge master
-download_github_repo arut nginx-rtmp-module master
-download_github_repo arut nginx-dav-ext-module master
-download_github_repo bpaquet ngx_http_enhanced_memcached_module master
-download_github_repo replay ngx_http_secure_download master
-download_github_repo simplresty ngx_devel_kit master
-download_github_repo wandenberg nginx-sorted-querystring-module master
-download_github_repo pandax381 ngx_http_pipelog_module master
-download_github_repo nginx-shib nginx-http-shibboleth master
-download_github_repo hnakamur lua-resty-saml-service-provider master
-download_github_repo hnakamur lua-resty-session master
-download_github_repo hamishforbes lua-ffi-zlib master
-download_github_repo Phrogz SLAXML master
+download_github_repo -b master FRiCKLE/ngx_cache_purge
+download_github_repo -b master arut/nginx-rtmp-module
+download_github_repo -b master arut/nginx-dav-ext-module
+download_github_repo -b master bpaquet/ngx_http_enhanced_memcached_module
+download_github_repo -b master replay/ngx_http_secure_download
+download_github_repo -b master simplresty/ngx_devel_kit
+download_github_repo -b master wandenberg/nginx-sorted-querystring-module
+download_github_repo -b master pandax381/ngx_http_pipelog_module
+download_github_repo -b master nginx-shib/nginx-http-shibboleth
+download_github_repo -b master hnakamur/nginx-lua-saml-service-provider
+download_github_repo -b master hnakamur/nginx-lua-session
+download_github_repo -b master hamishforbes/lua-ffi-zlib
+download_github_repo -b master Phrogz/SLAXML
