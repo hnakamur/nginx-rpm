@@ -17,6 +17,7 @@
 %define lua_resty_core_commit bdbac701eb017370775f7333979922041021aeee
 %define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
 %define lua_resty_string_commit 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
+%define lua_resty_lrucache_commit edaafeb0c2be6b2835911a3e38a5e4152d6a0d98
 %define lua_resty_cookie_commit 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
 %define lua_resty_http_commit 75e30060863d41df47c95a5b54e1458954e98792
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
@@ -28,7 +29,7 @@
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 %define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
 %define nginx_http_shibboleth_commit b441df08887fc10e44cc047da2a188014a0dadf5
-%define nginx_lua_saml_service_provider_commit 04a8feab7bf8383daf61bafa512bd76b30b32506
+%define nginx_lua_saml_service_provider_commit 391490b399187e3648f6d796ba6141a00be2f8fc
 %define nginx_lua_session_commit 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
 %define lua_ffi_zlib_commit 3d6dbee710b4712b8d0e0235425abee04a22b1bd
 %define SLAXML_commit 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
@@ -124,7 +125,7 @@ Source123: strings://github.com/hnakamur/nginx-lua-saml-service-provider/archive
 Source124: strings://github.com/hnakamur/nginx-lua-session/archive/%{nginx_lua_session_commit}.tar.gz#/nginx-lua-session.tar.gz
 Source125: strings://github.com/hamishforbes/lua-ffi-zlib/archive/%{lua_ffi_zlib_commit}.tar.gz#/lua-ffi-zlib.tar.gz
 Source126: strings://github.com/Phrogz/SLAXML/archive/%{SLAXML_commit}.tar.gz#/SLAXML.tar.gz
-
+Source127: strings://github.com/openresty/lua-resty-lrucache/archive/%{lua_resty_lrucache_commit}.tar.gz#/lua-resty-lrucache.tar.gz
 
 Patch14: ngx_http_secure_download-dynamic_module.patch
 Patch15: ngx_cache_purge-dynamic_module.patch
@@ -158,7 +159,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126 -a 127
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -332,6 +333,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-cookie/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-http/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-string/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-lrucache/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-saml-service-provider/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-session/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-ffi-zlib/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
@@ -533,6 +535,7 @@ fi
 - lua_resty_core bdbac701eb017370775f7333979922041021aeee
 - stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
 - lua_resty_string 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
+- lua_resty_lrucache edaafeb0c2be6b2835911a3e38a5e4152d6a0d98
 - lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
 - lua_resty_http 75e30060863d41df47c95a5b54e1458954e98792
 - ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
@@ -544,7 +547,7 @@ fi
 - nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
 - ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
 - nginx_http_shibboleth b441df08887fc10e44cc047da2a188014a0dadf5
-- nginx_lua_saml_service_provider 04a8feab7bf8383daf61bafa512bd76b30b32506
+- nginx_lua_saml_service_provider 391490b399187e3648f6d796ba6141a00be2f8fc
 - nginx_lua_session 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
 - lua_ffi_zlib 3d6dbee710b4712b8d0e0235425abee04a22b1bd
 - SLAXML 8bfc922c6ed14f89548d7bbc2401ce35d7d92749

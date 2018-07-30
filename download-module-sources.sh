@@ -46,9 +46,10 @@ download_github_repo -b master openresty/srcache-nginx-module
 download_github_repo -b master openresty/lua-resty-core
 download_github_repo -b master openresty/stream-lua-nginx-module
 download_github_repo -b master openresty/lua-resty-string
+download_github_repo -b master openresty/lua-resty-lrucache
 download_github_repo -b master cloudflare/lua-resty-cookie
-download_github_repo -b master pintsized/lua-resty-http
 
+download_github_repo -b master pintsized/lua-resty-http
 download_github_repo -b master FRiCKLE/ngx_cache_purge
 download_github_repo -b master arut/nginx-rtmp-module
 download_github_repo -b master arut/nginx-dav-ext-module
