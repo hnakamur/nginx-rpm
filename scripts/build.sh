@@ -10,45 +10,13 @@ luajit_repo_baseurl='https://copr-be.cloud.fedoraproject.org/results/hnakamur/lu
 copr_project_description="[nginx](http://nginx.org/) is a high performance web server.
 This rpm includes the following modules as dynamic modules:
 
-* [openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
-* [openresty/headers-more-nginx-module](https://github.com/openresty/headers-more-nginx-module)
-* [wandenberg/nginx-sorted-querystring-module](https://github.com/wandenberg/nginx-sorted-querystring-module)
-* [arut/nginx-rtmp-module](https://github.com/arut/nginx-rtmp-module)
-* [FRiCKLE/ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge)
-* [replay/ngx_http_secure_download](https://github.com/replay/ngx_http_secure_download)
-* [openresty/srcache-nginx-module](https://github.com/openresty/srcache-nginx-module)
-* [openresty/redis2-nginx-module](https://github.com/openresty/redis2-nginx-module)
-* [openresty/memc-nginx-module](https://github.com/openresty/memc-nginx-module)
-* [openresty/lua-upstream-nginx-module](https://github.com/openresty/lua-upstream-nginx-module)
-* [openresty/echo-nginx-module](https://github.com/openresty/echo-nginx-module)
-* [bpaquet/ngx_http_enhanced_memcached_module](https://github.com/bpaquet/ngx_http_enhanced_memcached_module)
-* [arut/nginx-dav-ext-module](https://github.com/arut/nginx-dav-ext-module)
-* [simpl/ngx_devel_kit](https://github.com/simpl/ngx_devel_kit)
-* [openresty/set-misc-nginx-module](https://github.com/openresty/set-misc-nginx-module)
-* [pandax381/ngx_http_pipelog_module](https://github.com/pandax381/ngx_http_pipelog_module)
+* [apcera/nginx-statsd](https://github.com/apcera/nginx-statsd)
 
 Warning: Modules may be added or deleted without notice.
 "
 
-copr_project_instructions="\`\`\`
-version=\$(rpm -q --qf "%{VERSION}" \$(rpm -q --whatprovides redhat-release))
-\`\`\`
-
-\`\`\`
-ver=\${version:0:1} # 6 or 7
-\`\`\`
-
-\`\`\`
-sudo curl -sL -o /etc/yum.repos.d/${COPR_USERNAME}-${copr_project_name}.repo https://copr.fedoraproject.org/coprs/${COPR_USERNAME}/${copr_project_name}/repo/epel-\${ver}/${COPR_USERNAME}-${copr_project_name}-epel-\${ver}.repo
-\`\`\`
-
-\`\`\`
-sudo yum install ${rpm_name}
-\`\`\`"
-
 spec_file=${rpm_name}.spec
-mock_chroots="epel-6-${arch} epel-7-${arch}"
-ext_repos="https://copr-be.cloud.fedoraproject.org/results/hnakamur/luajit/el6-\$basearch/"
+mock_chroots="epel-6-${arch}"
 
 usage() {
   cat <<'EOF' 1>&2
@@ -57,7 +25,6 @@ Usage: build.sh subcommand
 subcommand:
   srpm          build the srpm
   mock          build the rpm locally with mock
-  copr          upload the srpm and build the rpm on copr
 EOF
 }
 
@@ -135,39 +102,7 @@ build_rpm_with_mock() {
   done
 }
 
-generate_copr_config() {
-  mkdir -p $HOME/.config
-  cat <<EOF > $HOME/.config/copr
-[copr-cli]
-username = ${COPR_USERNAME}
-login = ${COPR_LOGIN}
-token = ${COPR_TOKEN}
-copr_url = https://copr.fedoraproject.org
-EOF
-}
 
-build_rpm_on_copr() {
-  build_srpm
-
-  generate_copr_config
-
-  # Create copr project if it does not exist
-  if ! copr-cli list-package-names ${COPR_USERNAME}/${copr_project_name} 2>&1; then
-    local chroot_args=''
-    for mock_chroot in $mock_chroots; do
-      chroot_args="$chroot_args --chroot ${mock_chroot}"
-    done
-    local repo_args=''
-    for ext_repo in $ext_repos; do
-      repo_args="$repo_args --repo ${ext_repo}"
-    done
-    copr-cli create --description="${copr_project_description}" \
-        --instruction="${copr_project_instructions}" $chroot_args $repo_args \
-	${COPR_USERNAME}/${copr_project_name}
-  fi
-
-  copr-cli build ${COPR_USERNAME}/${copr_project_name} ${topdir}/SRPMS/${srpm_file}
-}
 
 case "${1:-}" in
 srpm)
@@ -175,12 +110,6 @@ srpm)
   ;;
 mock)
   build_rpm_with_mock
-  ;;
-copr)
-  build_rpm_on_copr
-  ;;
-coprcfg)
-  generate_copr_config
   ;;
 *)
   usage
