@@ -19,11 +19,11 @@ build)
   ;;
 run)
   # NOTE: We need SYS_ADMIN capability to build rpm with mock
-  docker run --privileged -e "COPR_LOGIN=$COPR_LOGIN" -e "COPR_USERNAME=$COPR_USERNAME" -e "COPR_TOKEN=$COPR_TOKEN" -it $imagename
+  docker run --privileged -it $imagename
   ;;
 bash)
   # NOTE: We need SYS_ADMIN capability to build rpm with mock
-  docker run --privileged -e "COPR_LOGIN=$COPR_LOGIN" -e "COPR_USERNAME=$COPR_USERNAME" -e "COPR_TOKEN=$COPR_TOKEN" -it $imagename /bin/bash
+  docker run --privileged  -it $imagename /bin/bash
   ;;
 *)
   usage

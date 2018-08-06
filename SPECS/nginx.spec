@@ -6,46 +6,10 @@
 
 %define ngx_openssl_version 1.0.2o
 
-%define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
-%define headers_more_nginx_module_commit a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
-%define lua_nginx_module_commit e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
-%define lua_upstream_nginx_module_commit 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
-%define memc_nginx_module_commit 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
-%define redis2_nginx_module_commit c989c829a2877132cb100f901e320921250e068d
-%define set_misc_nginx_module_commit aac9afe4c42d96e35d496994c552839799010255
-%define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
-%define lua_resty_core_commit bdbac701eb017370775f7333979922041021aeee
-%define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
-%define lua_resty_string_commit 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
-%define lua_resty_lrucache_commit edaafeb0c2be6b2835911a3e38a5e4152d6a0d98
-%define lua_resty_cookie_commit 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
-%define lua_resty_http_commit 75e30060863d41df47c95a5b54e1458954e98792
-%define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
-%define nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
-%define nginx_dav_ext_module_commit 430fd774fe838a04f1a5defbf1dd571d42300cf9
-%define ngx_http_enhanced_memcached_module_commit b58a4500db3c4ee274be54a18abc767219dcfd36
-%define ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
-%define ngx_devel_kit_commit a22dade76c838e5f377d58d007f65d35b5ce1df3
-%define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
-%define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
-%define nginx_http_shibboleth_commit b441df08887fc10e44cc047da2a188014a0dadf5
-%define nginx_lua_saml_service_provider_commit 391490b399187e3648f6d796ba6141a00be2f8fc
-%define nginx_lua_session_commit 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
-%define lua_ffi_zlib_commit 3d6dbee710b4712b8d0e0235425abee04a22b1bd
-%define SLAXML_commit 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
-
-%define luajit_inc /usr/include/luajit-2.1
-%define luajit_lib /usr/lib64
+%define nginx_statsd_commit b970e40467a624ba710c9a5106879a0554413d15
 
 # distribution specific definitions
 %define use_systemd (0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7) || (0%{?suse_version} == 1315)
-
-%if 0%{?rhel}  == 5
-Group: System Environment/Daemons
-Requires(pre): shadow-utils
-Requires: initscripts >= 8.36
-Requires(post): chkconfig
-%endif
 
 %if 0%{?rhel}  == 6
 Group: System Environment/Daemons
@@ -65,15 +29,6 @@ Epoch: 1
 %define with_http2 1
 %endif
 
-%if 0%{?suse_version} == 1315
-Group: Productivity/Networking/Web/Servers
-BuildRequires: systemd
-Requires(pre): shadow
-Requires: systemd
-%define with_http2 1
-%define nginx_loggroup trusted
-%endif
-
 # end of distribution specific definitions
 
 Summary: High performance web server
@@ -84,7 +39,6 @@ Vendor: nginx inc.
 URL: http://nginx.org/
 
 Source0: http://nginx.org/download/%{name}-%{version}.tar.gz
-Source1: logrotate
 Source2: nginx.init.in
 Source3: nginx.sysconf
 Source4: nginx.conf
@@ -92,48 +46,12 @@ Source5: nginx.vh.default.conf
 Source7: nginx-debug.sysconf
 Source8: nginx.service
 Source9: nginx.upgrade.sh
-Source10: nginx.suse.logrotate
 Source11: nginx-debug.service
 Source12: COPYRIGHT
 
-Source100: https://github.com/openresty/lua-nginx-module/archive/%{lua_nginx_module_commit}.tar.gz#/lua-nginx-module.tar.gz
-Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz#/headers-more-nginx-module.tar.gz
-Source102: https://github.com/openresty/stream-lua-nginx-module/archive/%{stream_lua_nginx_module_commit}.tar.gz#/stream-lua-nginx-module.tar.gz
-Source103: https://github.com/nginx-shib/nginx-http-shibboleth/archive/%{nginx_http_shibboleth_commit}.tar.gz#/nginx-http-shibboleth.tar.gz
-Source104: https://github.com/wandenberg/nginx-sorted-querystring-module/archive/%{nginx_sorted_querystring_module_commit}.tar.gz#/nginx-sorted-querystring-module.tar.gz
-Source105: https://github.com/arut/nginx-rtmp-module/archive/%{nginx_rtmp_module_commit}.tar.gz#/nginx-rtmp-module.tar.gz
-Source106: https://github.com/FRiCKLE/ngx_cache_purge/archive/%{ngx_cache_purge_commit}.tar.gz#/ngx_cache_purge.tar.gz
-Source107: https://github.com/replay/ngx_http_secure_download/archive/%{ngx_http_secure_download_commit}.tar.gz#/ngx_http_secure_download.tar.gz
-Source108: https://github.com/cloudflare/lua-resty-cookie/archive/%{lua_resty_cookie_commit}.tar.gz#/lua-resty-cookie.tar.gz
-Source109: https://github.com/openresty/srcache-nginx-module/archive/%{srcache_nginx_module_commit}.tar.gz#/srcache-nginx-module.tar.gz
-Source110: https://github.com/openresty/redis2-nginx-module/archive/%{redis2_nginx_module_commit}.tar.gz#/redis2-nginx-module.tar.gz
-Source111: https://github.com/openresty/memc-nginx-module/archive/%{memc_nginx_module_commit}.tar.gz#/memc-nginx-module.tar.gz
-Source112: https://github.com/openresty/lua-upstream-nginx-module/archive/%{lua_upstream_nginx_module_commit}.tar.gz#/lua-upstream-nginx-module.tar.gz
-Source113: https://github.com/openresty/echo-nginx-module/archive/%{echo_nginx_module_commit}.tar.gz#/echo-nginx-module.tar.gz
-Source114: https://github.com/bpaquet/ngx_http_enhanced_memcached_module/archive/%{ngx_http_enhanced_memcached_module_commit}.tar.gz#/ngx_http_enhanced_memcached_module.tar.gz
-Source115: https://github.com/arut/nginx-dav-ext-module/archive/%{nginx_dav_ext_module_commit}.tar.gz#/nginx-dav-ext-module.tar.gz
-Source116: https://github.com/simplresty/ngx_devel_kit/archive/%{ngx_devel_kit_commit}.tar.gz#/ngx_devel_kit.tar.gz
-Source117: https://github.com/openresty/set-misc-nginx-module/archive/%{set_misc_nginx_module_commit}.tar.gz#/set-misc-nginx-module.tar.gz
-Source118: https://github.com/pandax381/ngx_http_pipelog_module/archive/%{ngx_http_pipelog_module_commit}.tar.gz#/ngx_http_pipelog_module.tar.gz
-Source119: https://github.com/openresty/lua-resty-core/archive/%{lua_nginx_module_commit}.tar.gz#/lua-resty-core.tar.gz
+Source100: https://github.com/apcera/nginx-statsd/archive/%{nginx_statsd_commit}.tar.gz#/nginx-statsd.tar.gz
 
 Source120: https://openssl.org/source/openssl-%{ngx_openssl_version}.tar.gz
-
-Source121: https://github.com/pintsized/lua-resty-http/archive/%{lua_resty_http_commit}.tar.gz#/lua-resty-http.tar.gz
-Source122: strings://github.com/openresty/lua-resty-string/archive/%{lua_resty_string_commit}.tar.gz#/lua-resty-string.tar.gz
-Source123: strings://github.com/hnakamur/nginx-lua-saml-service-provider/archive/%{nginx_lua_saml_service_provider_commit}.tar.gz#/nginx-lua-saml-service-provider.tar.gz
-Source124: strings://github.com/hnakamur/nginx-lua-session/archive/%{nginx_lua_session_commit}.tar.gz#/nginx-lua-session.tar.gz
-Source125: strings://github.com/hamishforbes/lua-ffi-zlib/archive/%{lua_ffi_zlib_commit}.tar.gz#/lua-ffi-zlib.tar.gz
-Source126: strings://github.com/Phrogz/SLAXML/archive/%{SLAXML_commit}.tar.gz#/SLAXML.tar.gz
-Source127: strings://github.com/openresty/lua-resty-lrucache/archive/%{lua_resty_lrucache_commit}.tar.gz#/lua-resty-lrucache.tar.gz
-
-Patch14: ngx_http_secure_download-dynamic_module.patch
-Patch15: ngx_cache_purge-dynamic_module.patch
-Patch16: ngx_cache_purge-fix_compatibility_with_nginx_1.11.6.patch
-Patch17: ngx_cache_purge-feat_purge_all.patch
-Patch18: ngx_cache_purge-feat_purge_partial_keys.patch
-Patch19: ngx_cache_purge-select_response_type.patch
-Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 
 License: 2-clause BSD-like license
 
@@ -144,7 +62,6 @@ BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
 BuildRequires: GeoIP-devel
-BuildRequires: luajit-devel
 BuildRequires: mhash-devel
 BuildRequires: expat-devel
 
@@ -159,14 +76,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126 -a 127
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
+%setup -q -a 100 -a 120
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -174,7 +84,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
     -e 's|%%PROVIDES%%|nginx-debug|g' < %{SOURCE2} > nginx-debug.init
 
 %build
-LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
+
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
@@ -215,24 +125,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module \
-        --add-dynamic-module=./stream-lua-nginx-module \
-        --add-dynamic-module=./headers-more-nginx-module \
-        --add-dynamic-module=./nginx-sorted-querystring-module \
-        --add-dynamic-module=./nginx-rtmp-module \
-        --add-dynamic-module=./ngx_cache_purge \
-        --add-dynamic-module=./ngx_http_secure_download \
-        --add-dynamic-module=./redis2-nginx-module \
-        --add-dynamic-module=./srcache-nginx-module \
-        --add-dynamic-module=./memc-nginx-module \
-        --add-dynamic-module=./lua-upstream-nginx-module \
-        --add-dynamic-module=./echo-nginx-module \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
-        --add-dynamic-module=./nginx-dav-ext-module \
-        --add-module=./ngx_devel_kit \
-        --add-dynamic-module=./set-misc-nginx-module \
-        --add-dynamic-module=./ngx_http_pipelog_module \
-        --add-dynamic-module=./nginx-http-shibboleth \
+        --add-dynamic-module=./nginx-statsd \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
@@ -243,7 +136,6 @@ make %{?_smp_mflags}
 %{__mkdir} %{_builddir}/%{name}-%{version}/objs-debug
 %{__mv} %{_builddir}/%{name}-%{version}/objs/*.so \
         %{_builddir}/%{name}-%{version}/objs-debug
-LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
 ./configure \
         --prefix=%{_sysconfdir}/nginx \
         --sbin-path=%{_sbindir}/nginx \
@@ -284,24 +176,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --with-mail=dynamic \
         --with-mail_ssl_module \
         --with-file-aio \
-        --add-dynamic-module=./lua-nginx-module \
-        --add-dynamic-module=./stream-lua-nginx-module \
-        --add-dynamic-module=./headers-more-nginx-module \
-        --add-dynamic-module=./nginx-sorted-querystring-module \
-        --add-dynamic-module=./nginx-rtmp-module \
-        --add-dynamic-module=./ngx_cache_purge \
-        --add-dynamic-module=./ngx_http_secure_download \
-        --add-dynamic-module=./redis2-nginx-module \
-        --add-dynamic-module=./srcache-nginx-module \
-        --add-dynamic-module=./memc-nginx-module \
-        --add-dynamic-module=./lua-upstream-nginx-module \
-        --add-dynamic-module=./echo-nginx-module \
-        --add-dynamic-module=./ngx_http_enhanced_memcached_module \
-        --add-dynamic-module=./nginx-dav-ext-module \
-        --add-module=./ngx_devel_kit \
-        --add-dynamic-module=./set-misc-nginx-module \
-        --add-dynamic-module=./ngx_http_pipelog_module \
-        --add-dynamic-module=./nginx-http-shibboleth \
+        --add-dynamic-module=./nginx-statsd  \
         %{?with_http2:--with-http_v2_module} \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
         $*
@@ -327,17 +202,6 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug
 cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     %{__ln_s} ../..%{_libdir}/nginx/modules-debug modules-debug && cd -
-
-%{__mkdir} -p $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-core/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-cookie/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-http/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-string/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-lrucache/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-saml-service-provider/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-session/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-ffi-zlib/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
-%{__cp} -pr %{_builddir}/%{name}-%{version}/SLAXML/*.lua $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{version}
 %{__install} -m 644 -p %{SOURCE12} \
@@ -373,25 +237,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__install} -m755 nginx-debug.init $RPM_BUILD_ROOT%{_initrddir}/nginx-debug
 %endif
 
-# install log rotation stuff
-%{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-%if 0%{?suse_version}
-%{__install} -m 644 -p %{SOURCE10} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/nginx
-%else
-%{__install} -m 644 -p %{SOURCE1} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/nginx
-%endif
-
 %{__install} -m755 %{_builddir}/%{name}-%{version}/objs/nginx-debug \
     $RPM_BUILD_ROOT%{_sbindir}/nginx-debug
 %{__install} -m755 %{_builddir}/%{name}-%{version}/objs-debug/*.so \
     $RPM_BUILD_ROOT%{_libdir}/nginx/modules-debug/
-
-%{__install} -m644 \
-    %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_clear_headers \
-    %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_fastcgi_params \
-    $RPM_BUILD_ROOT%{_sysconfdir}/nginx/
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
@@ -413,13 +262,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %config(noreplace) %{_sysconfdir}/nginx/fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/scgi_params
 %config(noreplace) %{_sysconfdir}/nginx/uwsgi_params
-%config(noreplace) %{_sysconfdir}/nginx/shib_clear_headers
-%config(noreplace) %{_sysconfdir}/nginx/shib_fastcgi_params
 %config(noreplace) %{_sysconfdir}/nginx/koi-utf
 %config(noreplace) %{_sysconfdir}/nginx/koi-win
 %config(noreplace) %{_sysconfdir}/nginx/win-utf
 
-%config(noreplace) %{_sysconfdir}/logrotate.d/nginx
 %config(noreplace) %{_sysconfdir}/sysconfig/nginx
 %config(noreplace) %{_sysconfdir}/sysconfig/nginx-debug
 %if %{use_systemd}
@@ -437,8 +283,6 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules-debug
 %attr(0755,root,root) %{_libdir}/nginx/modules-debug/*.so
-%attr(0755,root,root) %dir %{_prefix}/lib/nginx/lua
-%{_prefix}/lib/nginx/lua/*
 %dir %{_datadir}/nginx
 %dir %{_datadir}/nginx/html
 %{_datadir}/nginx/html/*
