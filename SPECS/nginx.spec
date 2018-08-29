@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.0.2o
+%define ngx_openssl_version 1.0.2p
 
 %define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
 %define headers_more_nginx_module_commit a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
@@ -524,6 +524,7 @@ fi
 %changelog
 * Wed Aug 29 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.3-1
 - 1.15.2
+- OpenSSL 1.0.2p
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
 - headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
 - lua_nginx_module e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
