@@ -51,6 +51,7 @@ download_github_repo -b master cloudflare/lua-resty-cookie
 download_github_repo -b master zmartzone/lua-resty-openidc
 download_github_repo -b master bungle/lua-resty-session
 download_github_repo -b master cdbattags/lua-resty-jwt
+download_github_repo -b master jkeys089/lua-resty-hmac
 
 download_github_repo -b master pintsized/lua-resty-http
 download_github_repo -b master FRiCKLE/ngx_cache_purge

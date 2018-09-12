@@ -22,6 +22,7 @@
 %define lua_resty_openidc_commit 40ed435505b307b4d7046766b1f3ad7e0127c498
 %define lua_resty_session_commit 4429a06ffac1724a056fafa954c0394d437b261f
 %define lua_resty_jwt_commit f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98
+%define lua_resty_hmac_commit 989f601acbe74dee71c1a48f3e140a427f2d03ae
 %define lua_resty_http_commit e5deba5bde1db31adc7aad574bae5e89f83fd973
 %define ngx_cache_purge_commit 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
 %define nginx_rtmp_module_commit 791b6136f02bc9613daf178723ac09f4df5a3bbf
@@ -82,7 +83,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.15.3
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -132,6 +133,7 @@ Source127: https://github.com/openresty/lua-resty-lrucache/archive/%{lua_resty_l
 Source128: https://github.com/zmartzone/lua-resty-openidc/archive/%{lua_resty_openidc_commit}.tar.gz#/lua-resty-openidc.tar.gz
 Source129: https://github.com/bungle/lua-resty-session/archive/%{lua_resty_session_commit}.tar.gz#/lua-resty-session.tar.gz
 Source130: https://github.com/cdbattags/lua-resty-jwt/archive/%{lua_resty_jwt_commit}.tar.gz#/lua-resty-jwt.tar.gz
+Source131: https://github.com/jkeys089/lua-resty-hmac/archive/%{lua_resty_hmac_commit}.tar.gz#/lua-resty-hmac.tar.gz
 
 Patch14: ngx_http_secure_download-dynamic_module.patch
 Patch15: ngx_cache_purge-dynamic_module.patch
@@ -165,7 +167,7 @@ a mail proxy server.
 %endif
 
 %prep
-%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126 -a 127 -a 128 -a 129 -a 130
+%setup -q -a 100 -a 101 -a 102 -a 103 -a 104 -a 105 -a 106 -a 107 -a 108 -a 109 -a 110 -a 111 -a 112 -a 113 -a 114 -a 115 -a 116 -a 117 -a 118 -a 119 -a 120 -a 121 -a 122 -a 123 -a 124 -a 125 -a 126 -a 127 -a 128 -a 129 -a 130 -a 131
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -343,6 +345,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-openidc/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-session/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-jwt/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
+%{__cp} -pr %{_builddir}/%{name}-%{version}/lua-resty-hmac/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-saml-service-provider/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/nginx-lua-session/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
 %{__cp} -pr %{_builddir}/%{name}-%{version}/lua-ffi-zlib/lib/* $RPM_BUILD_ROOT%{_prefix}/lib/nginx/lua
@@ -531,6 +534,40 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Sep 12 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.3-3
+- Add jkeys089/lua-resty-hmac
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module e94f2e5d64daa45ff396e262d8dab8e56f5f10e0
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module aac9afe4c42d96e35d496994c552839799010255
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core bdbac701eb017370775f7333979922041021aeee
+- stream_lua_nginx_module e3eb228c08e5bab30404d5d715bd9b5a545f68a8
+- lua_resty_string 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
+- lua_resty_lrucache edaafeb0c2be6b2835911a3e38a5e4152d6a0d98
+- lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
+- lua_resty_openidc 40ed435505b307b4d7046766b1f3ad7e0127c498
+- lua_resty_session 4429a06ffac1724a056fafa954c0394d437b261f
+- lua_resty_jwt f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98
+- lua_resty_hmac 989f601acbe74dee71c1a48f3e140a427f2d03ae
+- lua_resty_http e5deba5bde1db31adc7aad574bae5e89f83fd973
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 2503d5ef853ff2542ee7e08d898a85a7747812e5
+- nginx_http_shibboleth d954cab13859f186862a38c32b7748760b947aa8
+- nginx_lua_saml_service_provider 90b79233bfc28dd48ad8f2d38a8d547d182f1a62
+- nginx_lua_session 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
+- lua_ffi_zlib 3d6dbee710b4712b8d0e0235425abee04a22b1bd
+- SLAXML 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
+
 * Fri Sep  7 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.3-2
 - Add zmartzone/lua-resty-openidc and dependencies
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
