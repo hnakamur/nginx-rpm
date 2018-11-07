@@ -8,18 +8,18 @@
 
 %define echo_nginx_module_commit c65f5c638d0501b482fbc3ebbda9a49648022d40
 %define headers_more_nginx_module_commit a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
-%define lua_nginx_module_commit f64ec8c9056437bb1b822fc4e99f05f784d36e32
+%define lua_nginx_module_commit 08a9baa92b64ac06d2c82d1af25298fc36f46264
 %define lua_upstream_nginx_module_commit 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
 %define memc_nginx_module_commit 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
 %define redis2_nginx_module_commit c989c829a2877132cb100f901e320921250e068d
-%define set_misc_nginx_module_commit aac9afe4c42d96e35d496994c552839799010255
+%define set_misc_nginx_module_commit bcfa7a6d0d0fca4dac57d5b45e6064c6fa7f1cae
 %define srcache_nginx_module_commit 53a98806b0a24cc736d11003662e8b769c3e7eb3
-%define lua_resty_core_commit bdbac701eb017370775f7333979922041021aeee
-%define stream_lua_nginx_module_commit e3eb228c08e5bab30404d5d715bd9b5a545f68a8
-%define lua_resty_string_commit 2ac7c3bdba55e06bbfd8d76aa981611ffb2cb321
-%define lua_resty_lrucache_commit edaafeb0c2be6b2835911a3e38a5e4152d6a0d98
+%define lua_resty_core_commit d2c6e28b4d4021602b800a835dc6bbaad4cc3d89
+%define stream_lua_nginx_module_commit eacdfa39184a5a5ea28bd15b3baf49b2c3fed23b
+%define lua_resty_string_commit bfc33982f37cb57748e94e204a6187d41263ac0e
+%define lua_resty_lrucache_commit d02dddc97953864eed537246f57aa8f537782ef9
 %define lua_resty_cookie_commit 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
-%define lua_resty_openidc_commit 06bfae9f1e55aa7328f33d5230e807e2498315e8
+%define lua_resty_openidc_commit 2879b4395bbfebb7390038a044f59fdf817d969a
 %define lua_resty_session_commit 4429a06ffac1724a056fafa954c0394d437b261f
 %define lua_resty_jwt_commit f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98
 %define lua_resty_hmac_commit 989f601acbe74dee71c1a48f3e140a427f2d03ae
@@ -31,12 +31,12 @@
 %define ngx_http_secure_download_commit f379a1acf2a76f63431a12fa483d9e22e718400b
 %define ngx_devel_kit_commit a22dade76c838e5f377d58d007f65d35b5ce1df3
 %define nginx_sorted_querystring_module_commit e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
-%define ngx_http_pipelog_module_commit 2503d5ef853ff2542ee7e08d898a85a7747812e5
+%define ngx_http_pipelog_module_commit 68b5f4b6553e1588c42d2cf021aa8b5f7bf268fb
 %define nginx_http_shibboleth_commit d954cab13859f186862a38c32b7748760b947aa8
 %define nginx_lua_saml_service_provider_commit 90b79233bfc28dd48ad8f2d38a8d547d182f1a62
 %define nginx_lua_session_commit 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
 %define lua_ffi_zlib_commit 3d6dbee710b4712b8d0e0235425abee04a22b1bd
-%define SLAXML_commit 8bfc922c6ed14f89548d7bbc2401ce35d7d92749
+%define SLAXML_commit b7f376997e720d0deb7d0e1e4803c9f264c239de
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -82,7 +82,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.15.5
+Version: 1.15.6
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -534,6 +534,40 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Nov  7 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.6-1
+- 1.15.6
+- echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
+- headers_more_nginx_module a9f7c7e86cc7441d04e2f11f01c2e3a9c4b0301d
+- lua_nginx_module 08a9baa92b64ac06d2c82d1af25298fc36f46264
+- lua_upstream_nginx_module 6ebcda3c1ee56a73ba73f3a36f5faa7821657115
+- memc_nginx_module 858fcdcf145ce2cad51cf5c8aa3d5e41a0facac3
+- redis2_nginx_module c989c829a2877132cb100f901e320921250e068d
+- set_misc_nginx_module bcfa7a6d0d0fca4dac57d5b45e6064c6fa7f1cae
+- srcache_nginx_module 53a98806b0a24cc736d11003662e8b769c3e7eb3
+- lua_resty_core d2c6e28b4d4021602b800a835dc6bbaad4cc3d89
+- stream_lua_nginx_module eacdfa39184a5a5ea28bd15b3baf49b2c3fed23b
+- lua_resty_string bfc33982f37cb57748e94e204a6187d41263ac0e
+- lua_resty_lrucache d02dddc97953864eed537246f57aa8f537782ef9
+- lua_resty_cookie 3edcd960ba9e3b2154cd3a24bf3e12f3a2a598a6
+- lua_resty_openidc 2879b4395bbfebb7390038a044f59fdf817d969a
+- lua_resty_session 4429a06ffac1724a056fafa954c0394d437b261f
+- lua_resty_jwt f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98
+- lua_resty_hmac 989f601acbe74dee71c1a48f3e140a427f2d03ae
+- lua_resty_http e5deba5bde1db31adc7aad574bae5e89f83fd973
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 791b6136f02bc9613daf178723ac09f4df5a3bbf
+- nginx_dav_ext_module 430fd774fe838a04f1a5defbf1dd571d42300cf9
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit a22dade76c838e5f377d58d007f65d35b5ce1df3
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module 68b5f4b6553e1588c42d2cf021aa8b5f7bf268fb
+- nginx_http_shibboleth d954cab13859f186862a38c32b7748760b947aa8
+- nginx_lua_saml_service_provider 90b79233bfc28dd48ad8f2d38a8d547d182f1a62
+- nginx_lua_session 00cfbbf018c6b8b74614e6fe3dc350b29a5c6ae8
+- lua_ffi_zlib 3d6dbee710b4712b8d0e0235425abee04a22b1bd
+- SLAXML b7f376997e720d0deb7d0e1e4803c9f264c239de
+
 * Thu Oct  4 2018 Hiroaki Nakamura <hnakamur@gmail.com> - 1.15.5-1
 - 1.15.5
 - echo_nginx_module c65f5c638d0501b482fbc3ebbda9a49648022d40
