@@ -81,3 +81,5 @@ download_github_repo -b master hnakamur/nginx-lua-saml-service-provider
 download_github_repo -b master hnakamur/nginx-lua-session
 download_github_repo -b master hamishforbes/lua-ffi-zlib
 download_github_repo -b master Phrogz/SLAXML
+download_github_repo -b master leev/ngx_http_geoip2_module
+download_github_repo -b master wdaike/ngx_upstream_jdomain
