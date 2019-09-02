@@ -188,6 +188,10 @@ BuildRequires: GeoIP-devel
 BuildRequires: luajit-devel
 BuildRequires: mhash-devel
 BuildRequires: expat-devel
+BuildRequires: libmaxminddb-devel
+
+Recommends: libmaxminddb
+Suggests: GeoIP
 
 Provides: webserver
 
