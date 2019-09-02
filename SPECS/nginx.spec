@@ -175,6 +175,7 @@ Patch18: ngx_cache_purge-feat_purge_partial_keys.patch
 Patch19: ngx_cache_purge-select_response_type.patch
 Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
+Patch22: fix-luajit-ffi-detection.patch
 
 License: 2-clause BSD-like license
 
@@ -210,6 +211,7 @@ a mail proxy server.
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
+%patch22 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init

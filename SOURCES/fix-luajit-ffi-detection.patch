@@ -1,0 +1,24 @@
+diff --git a/lua-nginx-module/config b/lua-nginx-module/config
+index e15cb49..fff2a6e 100644
+--- a/lua-nginx-module/config
++++ b/lua-nginx-module/config
+@@ -210,7 +210,6 @@ fi
+ # ----------------------------------------
+ 
+ ngx_feature="LuaJIT has FFI"
+-ngx_feature_libs="$LUAJIT_LIB/libluajit-5.1.a $luajit_ld_opt"
+ ngx_feature_run=yes
+ ngx_feature_incs="#include <lualib.h>
+                   #include <lauxlib.h>
+diff --git a/stream-lua-nginx-module/config b/stream-lua-nginx-module/config
+index f524267..96d5395 100644
+--- a/stream-lua-nginx-module/config
++++ b/stream-lua-nginx-module/config
+@@ -207,7 +207,6 @@ fi
+ # ----------------------------------------
+ 
+ ngx_feature="LuaJIT has FFI"
+-ngx_feature_libs="$LUAJIT_LIB/libluajit-5.1.a $luajit_ld_opt"
+ ngx_feature_run=yes
+ ngx_feature_incs="#include <lualib.h>
+                   #include <lauxlib.h>
