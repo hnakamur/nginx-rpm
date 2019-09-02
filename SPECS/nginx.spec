@@ -190,7 +190,7 @@ BuildRequires: mhash-devel
 BuildRequires: expat-devel
 BuildRequires: libmaxminddb-devel
 
-Recommends: libmaxminddb
+Suggests: libmaxminddb
 Suggests: GeoIP
 
 Provides: webserver
