@@ -99,7 +99,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.17.3
-Release: 3%{?dist}.ngx
+Release: 4%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -591,6 +591,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Sep  4 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-4
+- Fix nginx-1.17.3-cache_manager.patch
+
 * Wed Sep  4 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-3
 - Add nginx-1.17.3-cache_manager.patch
 

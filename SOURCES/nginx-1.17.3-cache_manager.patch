@@ -1,8 +1,6 @@
-diff --git a/src/http/modules/ngx_http_proxy_module.c b/src/http/modules/ngx_http_proxy_module.c
-index 3aafb999..90d5271b 100644
 --- a/src/http/modules/ngx_http_proxy_module.c
 +++ b/src/http/modules/ngx_http_proxy_module.c
-@@ -204,6 +204,8 @@ static ngx_int_t ngx_http_proxy_set_ssl(ngx_conf_t *cf,
+@@ -204,6 +204,8 @@
  #endif
  static void ngx_http_proxy_set_vars(ngx_url_t *u, ngx_http_proxy_vars_t *v);
  
@@ -11,7 +9,7 @@ index 3aafb999..90d5271b 100644
  
  static ngx_conf_post_t  ngx_http_proxy_lowat_post =
      { ngx_http_proxy_lowat_check };
-@@ -722,6 +724,12 @@ static ngx_command_t  ngx_http_proxy_commands[] = {
+@@ -722,6 +724,12 @@
        0,
        NULL },
  
@@ -24,7 +22,7 @@ index 3aafb999..90d5271b 100644
  #endif
  
        ngx_null_command
-@@ -4365,3 +4373,103 @@ ngx_http_proxy_set_vars(ngx_url_t *u, ngx_http_proxy_vars_t *v)
+@@ -4365,3 +4373,103 @@
  
      v->uri = u->uri;
  }
@@ -128,11 +126,9 @@ index 3aafb999..90d5271b 100644
 +
 +    return NGX_CONF_OK;
 +}
-diff --git a/src/http/ngx_http_cache.h b/src/http/ngx_http_cache.h
-index f9e96640..fefb9607 100644
 --- a/src/http/ngx_http_cache.h
 +++ b/src/http/ngx_http_cache.h
-@@ -176,6 +176,8 @@ struct ngx_http_file_cache_s {
+@@ -176,6 +176,8 @@
      ngx_uint_t                       manager_files;
      ngx_msec_t                       manager_sleep;
      ngx_msec_t                       manager_threshold;
@@ -141,11 +137,9 @@ index f9e96640..fefb9607 100644
  
      ngx_shm_zone_t                  *shm_zone;
  
-diff --git a/src/http/ngx_http_file_cache.c b/src/http/ngx_http_file_cache.c
-index ecdf11e2..1f1d781f 100644
 --- a/src/http/ngx_http_file_cache.c
 +++ b/src/http/ngx_http_file_cache.c
-@@ -1829,7 +1829,7 @@ ngx_http_file_cache_expire(ngx_http_file_cache_t *cache)
+@@ -1829,7 +1829,7 @@
          }
  
          if (ngx_queue_empty(&cache->sh->queue)) {
@@ -154,7 +148,7 @@ index ecdf11e2..1f1d781f 100644
              break;
          }
  
-@@ -1840,7 +1840,7 @@ ngx_http_file_cache_expire(ngx_http_file_cache_t *cache)
+@@ -1840,7 +1840,7 @@
          wait = fcn->expire - now;
  
          if (wait > 0) {
@@ -163,7 +157,7 @@ index ecdf11e2..1f1d781f 100644
              break;
          }
  
-@@ -1967,11 +1967,17 @@ ngx_http_file_cache_manager(void *data)
+@@ -1967,11 +1967,16 @@
      cache->last = ngx_current_msec;
      cache->files = 0;
  
@@ -173,7 +167,7 @@ index ecdf11e2..1f1d781f 100644
 +    if (cache->manager_ignore_cache_wait) {
 +        (void) ngx_http_file_cache_expire(cache);
          next = cache->manager_sleep;
-         goto done;
+-        goto done;
 +    } else {
 +        next = (ngx_msec_t) ngx_http_file_cache_expire(cache) * 1000;
 +
@@ -184,7 +178,7 @@ index ecdf11e2..1f1d781f 100644
      }
  
      for ( ;; ) {
-@@ -2312,6 +2318,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+@@ -2312,6 +2317,8 @@
      ngx_int_t               loader_files, manager_files;
      ngx_msec_t              loader_sleep, manager_sleep, loader_threshold,
                              manager_threshold;
@@ -193,7 +187,7 @@ index ecdf11e2..1f1d781f 100644
      ngx_uint_t              i, n, use_temp_path;
      ngx_array_t            *caches;
      ngx_http_file_cache_t  *cache, **ce;
-@@ -2337,6 +2345,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+@@ -2337,6 +2344,8 @@
      manager_files = 100;
      manager_sleep = 50;
      manager_threshold = 200;
@@ -202,7 +196,7 @@ index ecdf11e2..1f1d781f 100644
  
      name.len = 0;
      size = 0;
-@@ -2560,6 +2570,42 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+@@ -2560,6 +2569,42 @@
              continue;
          }
  
@@ -245,7 +239,7 @@ index ecdf11e2..1f1d781f 100644
          ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                             "invalid parameter \"%V\"", &value[i]);
          return NGX_CONF_ERROR;
-@@ -2583,6 +2629,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+@@ -2583,6 +2628,8 @@
      cache->manager_files = manager_files;
      cache->manager_sleep = manager_sleep;
      cache->manager_threshold = manager_threshold;
