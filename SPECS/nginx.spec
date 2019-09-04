@@ -99,7 +99,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.17.3
-Release: 2%{?dist}.ngx
+Release: 3%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -176,6 +176,7 @@ Patch19: ngx_cache_purge-select_response_type.patch
 Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
 Patch22: fix-luajit-ffi-detection.patch
+Patch23: nginx-1.17.3-cache_manager.patch
 
 License: 2-clause BSD-like license
 
@@ -212,6 +213,7 @@ a mail proxy server.
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch23 -p1
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -589,6 +591,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Sep  4 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-3
+- Add nginx-1.17.3-cache_manager.patch
+
 * Mon Sep  2 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-2
 - Add ngx_http_geoip2_module and ngx_upstream_jdomain
 - Update other modules

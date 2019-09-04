@@ -1,0 +1,256 @@
+diff --git a/src/http/modules/ngx_http_proxy_module.c b/src/http/modules/ngx_http_proxy_module.c
+index 3aafb999..90d5271b 100644
+--- a/src/http/modules/ngx_http_proxy_module.c
++++ b/src/http/modules/ngx_http_proxy_module.c
+@@ -204,6 +204,8 @@ static ngx_int_t ngx_http_proxy_set_ssl(ngx_conf_t *cf,
+ #endif
+ static void ngx_http_proxy_set_vars(ngx_url_t *u, ngx_http_proxy_vars_t *v);
+ 
++static ngx_int_t ngx_http_proxy_file_cache_stats_handler(ngx_http_request_t *r);
++static char *ngx_http_proxy_file_cache_stats(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+ 
+ static ngx_conf_post_t  ngx_http_proxy_lowat_post =
+     { ngx_http_proxy_lowat_check };
+@@ -722,6 +724,12 @@ static ngx_command_t  ngx_http_proxy_commands[] = {
+       0,
+       NULL },
+ 
++    { ngx_string("file_cache_stats"),
++      NGX_HTTP_LOC_CONF|NGX_CONF_NOARGS,
++      ngx_http_proxy_file_cache_stats,
++      0,
++      0,
++      NULL },
+ #endif
+ 
+       ngx_null_command
+@@ -4365,3 +4373,103 @@ ngx_http_proxy_set_vars(ngx_url_t *u, ngx_http_proxy_vars_t *v)
+ 
+     v->uri = u->uri;
+ }
++
++
++static ngx_int_t
++ngx_http_proxy_file_cache_stats_handler(ngx_http_request_t *r)
++{
++    ngx_http_proxy_main_conf_t      *pmcf;
++    ngx_http_file_cache_t          **caches, *cache;
++    ngx_uint_t                       i;
++    ngx_str_t                       *name;
++    ngx_int_t                        rc;
++    ngx_chain_t                      out;
++    ngx_int_t                        buf_size = 1024;
++    u_char                          *buf;
++    ngx_buf_t                       *b;
++    ngx_atomic_t                     cold;
++    ngx_atomic_t                     loading;
++    off_t                            size;
++    ngx_uint_t                       count;
++    ngx_uint_t                       watermark;
++
++    if (r->method != NGX_HTTP_GET && r->method != NGX_HTTP_HEAD) {
++        return NGX_HTTP_NOT_ALLOWED;
++    }
++
++    if (r->headers_in.if_modified_since) {
++        return NGX_HTTP_NOT_MODIFIED;
++    }
++
++    buf = ngx_pcalloc(r->pool, buf_size);
++    if (buf == NULL) {
++        return NGX_HTTP_INTERNAL_SERVER_ERROR;
++    }
++
++    b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
++    if (b == NULL) {
++        return NGX_HTTP_INTERNAL_SERVER_ERROR;
++    }
++
++    b->start    = buf;
++    b->pos      = buf;
++    b->last     = buf;
++    b->end      = buf + buf_size;
++    b->memory   = 1;
++    b->last_buf = 1;
++    out.buf     = b;
++    out.next    = NULL;
++
++    pmcf = ngx_http_get_module_main_conf(r, ngx_http_proxy_module);
++    caches = pmcf->caches.elts;
++
++    for (i = 0; i < pmcf->caches.nelts; i++) {
++        cache = caches[i];
++        name = &cache->shm_zone->shm.name;
++
++        ngx_shmtx_lock(&cache->shpool->mutex);
++
++        cold = cache->sh->cold;
++        loading = cache->sh->loading;
++        size = cache->sh->size;
++        count = cache->sh->count;
++        watermark = cache->sh->watermark;
++
++        ngx_shmtx_unlock(&cache->shpool->mutex);
++
++        b->last = ngx_snprintf(b->last, b->end - b->last,
++                               "http_file_cache_sh_cold{zone=\"%*s\"} %d\n"
++                               "http_file_cache_sh_loading{zone=\"%*s\"} %d\n"
++                               "http_file_cache_sh_size{zone=\"%*s\"} %d\n"
++                               "http_file_cache_sh_count{zone=\"%*s\"} %d\n"
++                               "http_file_cache_sh_watermark{zone=\"%*s\"} %d\n",
++                               name->len, name->data, cold,
++                               name->len, name->data, loading,
++                               name->len, name->data, size,
++                               name->len, name->data, count,
++                               name->len, name->data, watermark);
++    }
++
++    ngx_str_set(&r->headers_out.content_type, "text/plain");
++    r->headers_out.status = NGX_HTTP_OK;
++    r->headers_out.content_length_n  = b->last - b->pos;
++
++    rc = ngx_http_send_header(r);
++    if (rc == NGX_ERROR || rc > NGX_OK || r->header_only) {
++        return rc;
++    }
++
++    return ngx_http_output_filter(r, &out);
++}
++
++
++static char *
++ngx_http_proxy_file_cache_stats(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
++{
++    ngx_http_core_loc_conf_t  *clcf;
++
++    clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
++    clcf->handler = ngx_http_proxy_file_cache_stats_handler;
++
++    return NGX_CONF_OK;
++}
+diff --git a/src/http/ngx_http_cache.h b/src/http/ngx_http_cache.h
+index f9e96640..fefb9607 100644
+--- a/src/http/ngx_http_cache.h
++++ b/src/http/ngx_http_cache.h
+@@ -176,6 +176,8 @@ struct ngx_http_file_cache_s {
+     ngx_uint_t                       manager_files;
+     ngx_msec_t                       manager_sleep;
+     ngx_msec_t                       manager_threshold;
++    time_t                           manager_max_cache_wait;
++    ngx_flag_t                       manager_ignore_cache_wait;
+ 
+     ngx_shm_zone_t                  *shm_zone;
+ 
+diff --git a/src/http/ngx_http_file_cache.c b/src/http/ngx_http_file_cache.c
+index ecdf11e2..1f1d781f 100644
+--- a/src/http/ngx_http_file_cache.c
++++ b/src/http/ngx_http_file_cache.c
+@@ -1829,7 +1829,7 @@ ngx_http_file_cache_expire(ngx_http_file_cache_t *cache)
+         }
+ 
+         if (ngx_queue_empty(&cache->sh->queue)) {
+-            wait = 10;
++            wait = cache->manager_max_cache_wait;
+             break;
+         }
+ 
+@@ -1840,7 +1840,7 @@ ngx_http_file_cache_expire(ngx_http_file_cache_t *cache)
+         wait = fcn->expire - now;
+ 
+         if (wait > 0) {
+-            wait = wait > 10 ? 10 : wait;
++            wait = wait > cache->manager_max_cache_wait ? cache->manager_max_cache_wait : wait;
+             break;
+         }
+ 
+@@ -1967,11 +1967,17 @@ ngx_http_file_cache_manager(void *data)
+     cache->last = ngx_current_msec;
+     cache->files = 0;
+ 
+-    next = (ngx_msec_t) ngx_http_file_cache_expire(cache) * 1000;
+-
+-    if (next == 0) {
++    if (cache->manager_ignore_cache_wait) {
++        (void) ngx_http_file_cache_expire(cache);
+         next = cache->manager_sleep;
+         goto done;
++    } else {
++        next = (ngx_msec_t) ngx_http_file_cache_expire(cache) * 1000;
++
++        if (next == 0) {
++            next = cache->manager_sleep;
++            goto done;
++        }
+     }
+ 
+     for ( ;; ) {
+@@ -2312,6 +2318,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+     ngx_int_t               loader_files, manager_files;
+     ngx_msec_t              loader_sleep, manager_sleep, loader_threshold,
+                             manager_threshold;
++    time_t                  manager_max_cache_wait;
++    ngx_flag_t              manager_ignore_cache_wait;
+     ngx_uint_t              i, n, use_temp_path;
+     ngx_array_t            *caches;
+     ngx_http_file_cache_t  *cache, **ce;
+@@ -2337,6 +2345,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+     manager_files = 100;
+     manager_sleep = 50;
+     manager_threshold = 200;
++    manager_max_cache_wait = 10;
++    manager_ignore_cache_wait = 0;
+ 
+     name.len = 0;
+     size = 0;
+@@ -2560,6 +2570,42 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+             continue;
+         }
+ 
++        if (ngx_strncmp(value[i].data, "manager_max_cache_wait=", 23) == 0) {
++
++            s.len = value[i].len - 23;
++            s.data = value[i].data + 23;
++
++            manager_max_cache_wait = ngx_parse_time(&s, 1);
++            if (manager_max_cache_wait == NGX_ERROR) {
++                ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
++                           "invalid manager_max_cache_wait value \"%V\"", &value[i]);
++                return NGX_CONF_ERROR;
++            }
++            ngx_conf_log_error(NGX_LOG_NOTICE, cf, 0,
++                       "manager_max_cache_wait value \"%V\", parsed=%d", &value[i], manager_max_cache_wait);
++
++            continue;
++        }
++
++        if (ngx_strncmp(value[i].data, "manager_ignore_cache_wait=", 26) == 0) {
++
++            if (ngx_strcmp(&value[i].data[26], "on") == 0) {
++                manager_ignore_cache_wait = 1;
++
++            } else if (ngx_strcmp(&value[i].data[26], "off") == 0) {
++                manager_ignore_cache_wait = 0;
++
++            } else {
++                ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
++                                   "invalid manager_ignore_cache_wait value \"%V\", "
++                                   "it must be \"on\" or \"off\"",
++                                   &value[i]);
++                return NGX_CONF_ERROR;
++            }
++
++            continue;
++        }
++
+         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                            "invalid parameter \"%V\"", &value[i]);
+         return NGX_CONF_ERROR;
+@@ -2583,6 +2629,8 @@ ngx_http_file_cache_set_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+     cache->manager_files = manager_files;
+     cache->manager_sleep = manager_sleep;
+     cache->manager_threshold = manager_threshold;
++    cache->manager_max_cache_wait = manager_max_cache_wait;
++    cache->manager_ignore_cache_wait = manager_ignore_cache_wait;
+ 
+     if (ngx_add_path(cf, &cache->path) != NGX_OK) {
+         return NGX_CONF_ERROR;
