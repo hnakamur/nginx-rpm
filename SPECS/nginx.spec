@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.0.2s
+%define ngx_openssl_version 1.0.2t
 
 %define echo_nginx_module_commit 2b3b256234d9966470d5441a0c743d9c5693607e
 %define headers_more_nginx_module_commit 380e994d31284f6f450f9b00f464782467ee567c
@@ -99,7 +99,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.17.3
-Release: 4%{?dist}.ngx
+Release: 5%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -591,6 +591,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Sep 11 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-5
+- OpenSSL 1.0.2t
+
 * Wed Sep  4 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.3-4
 - Fix nginx-1.17.3-cache_manager.patch
 
