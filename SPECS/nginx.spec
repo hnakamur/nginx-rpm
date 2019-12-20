@@ -52,7 +52,7 @@
 %define lua_ffi_zlib_commit ae5f73508085e7ecce043f86342336400bf45a7c
 %define SLAXML_commit b7f376997e720d0deb7d0e1e4803c9f264c239de
 %define ngx_http_geoip2_module_commit 5a83b6f958c67ea88d2899d0b3c2a5db8e36b211
-%define ngx_upstream_jdomain_commit 1a92c677bd828fb41b88e0d87ca98995686a4e0a
+%define ngx_upstream_jdomain_commit a5a8e07f76cbe82b0792f8e3091e011c0c12f230
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -593,6 +593,8 @@ fi
 %changelog
 * Fri Dec 20 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.6-2
 - OpenSSL 1.1.1d
+- change to e98cuenc/ngx_upstream_jdomain
+- ngx_upstream_jdomain a5a8e07f76cbe82b0792f8e3091e011c0c12f230
 
 * Fri Nov 22 2019 Hiroaki Nakamura <hnakamur@gmail.com> - 1.17.6-1
 - 1.17.6
