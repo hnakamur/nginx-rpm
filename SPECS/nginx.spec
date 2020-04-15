@@ -286,7 +286,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./ngx_upstream_jdomain \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23} -Wno-uninitialized -Wno-unused-variable" \
         $*
 make %{?_smp_mflags}
 %{__mv} %{_builddir}/%{name}-%{version}/objs/nginx \
@@ -356,7 +356,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./ngx_http_geoip2_module \
         --add-dynamic-module=./ngx_upstream_jdomain \
         %{?with_http2:--with-http_v2_module} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23}" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23} -Wno-uninitialized -Wno-unused-variable" \
         $*
 make %{?_smp_mflags}
 (cd lua-resty-jump-consistent-hash \
