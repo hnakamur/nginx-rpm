@@ -468,9 +468,10 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
     %{_builddir}/%{name}-%{version}/nginx-http-shibboleth/includes/shib_fastcgi_params \
     $RPM_BUILD_ROOT%{_sysconfdir}/nginx/
 
+%{__install} -m755 -d $RPM_BUILD_ROOT%{_libdir}/lua/5.1
 %{__install} -m644 \
     %{_builddir}/%{name}-%{version}/lua-resty-jump-consistent-hash/libjchash.so \
-    %{_libdir}
+    $RPM_BUILD_ROOT%{_libdir}/lua/5.1/
 
 %clean
 %{__rm} -rf $RPM_BUILD_ROOT
@@ -514,7 +515,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %dir %{_libdir}/nginx
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
-%attr(0644,root,root) %{_libdir}/libjchash.so
+%attr(0644,root,root) %{_libdir}/lua/5.1/libjchash.so
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules-debug
 %attr(0755,root,root) %{_libdir}/nginx/modules-debug/*.so
 %attr(0755,root,root) %dir %{_prefix}/lib/nginx/lua
