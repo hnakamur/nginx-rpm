@@ -1,6 +1,6 @@
 --- a/src/http/modules/ngx_http_proxy_module.c
 +++ b/src/http/modules/ngx_http_proxy_module.c
-@@ -204,6 +204,8 @@
+@@ -244,6 +244,8 @@
  #endif
  static void ngx_http_proxy_set_vars(ngx_url_t *u, ngx_http_proxy_vars_t *v);
  
@@ -9,8 +9,8 @@
  
  static ngx_conf_post_t  ngx_http_proxy_lowat_post =
      { ngx_http_proxy_lowat_check };
-@@ -722,6 +724,12 @@
-       0,
+@@ -614,6 +616,12 @@
+       offsetof(ngx_http_proxy_loc_conf_t, upstream.cache_background_update),
        NULL },
  
 +    { ngx_string("file_cache_stats"),
@@ -21,8 +21,8 @@
 +      NULL },
  #endif
  
-       ngx_null_command
-@@ -4365,3 +4373,103 @@
+     { ngx_string("proxy_temp_path"),
+@@ -4996,3 +5004,103 @@
  
      v->uri = u->uri;
  }
@@ -128,7 +128,7 @@
 +}
 --- a/src/http/ngx_http_cache.h
 +++ b/src/http/ngx_http_cache.h
-@@ -176,6 +176,8 @@
+@@ -179,6 +179,8 @@
      ngx_uint_t                       manager_files;
      ngx_msec_t                       manager_sleep;
      ngx_msec_t                       manager_threshold;
@@ -139,7 +139,7 @@
  
 --- a/src/http/ngx_http_file_cache.c
 +++ b/src/http/ngx_http_file_cache.c
-@@ -1829,7 +1829,7 @@
+@@ -1832,7 +1832,7 @@
          }
  
          if (ngx_queue_empty(&cache->sh->queue)) {
@@ -148,7 +148,7 @@
              break;
          }
  
-@@ -1840,7 +1840,7 @@
+@@ -1843,7 +1843,7 @@
          wait = fcn->expire - now;
  
          if (wait > 0) {
@@ -157,7 +157,7 @@
              break;
          }
  
-@@ -1967,11 +1967,16 @@
+@@ -1970,11 +1970,16 @@
      cache->last = ngx_current_msec;
      cache->files = 0;
  
@@ -178,7 +178,7 @@
      }
  
      for ( ;; ) {
-@@ -2312,6 +2317,8 @@
+@@ -2327,6 +2332,8 @@
      ngx_int_t               loader_files, manager_files;
      ngx_msec_t              loader_sleep, manager_sleep, loader_threshold,
                              manager_threshold;
@@ -187,7 +187,7 @@
      ngx_uint_t              i, n, use_temp_path;
      ngx_array_t            *caches;
      ngx_http_file_cache_t  *cache, **ce;
-@@ -2337,6 +2344,8 @@
+@@ -2352,6 +2359,8 @@
      manager_files = 100;
      manager_sleep = 50;
      manager_threshold = 200;
@@ -196,7 +196,7 @@
  
      name.len = 0;
      size = 0;
-@@ -2560,6 +2569,42 @@
+@@ -2599,6 +2608,42 @@
              continue;
          }
  
@@ -239,7 +239,7 @@
          ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                             "invalid parameter \"%V\"", &value[i]);
          return NGX_CONF_ERROR;
-@@ -2583,6 +2628,8 @@
+@@ -2622,6 +2667,8 @@
      cache->manager_files = manager_files;
      cache->manager_sleep = manager_sleep;
      cache->manager_threshold = manager_threshold;

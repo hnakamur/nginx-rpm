@@ -179,7 +179,7 @@ Patch18: ngx_cache_purge-feat_purge_partial_keys.patch
 Patch19: ngx_cache_purge-select_response_type.patch
 Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
-Patch23: nginx-1.17.3-cache_manager.patch
+Patch23: nginx-1.19.4-cache_manager.patch
 
 License: 2-clause BSD-like license
 
@@ -605,6 +605,8 @@ fi
 %changelog
 * Wed Oct 28 2020 Hiroaki Nakamura <hnakamur@gmail.com> - 1.19.4-1
 - 1.19.4
+- Update line offsets in nginx-1.17.3-cache_manager.patch and
+  rename to nginx-1.19.4-cache_manager.patch.
 - echo_nginx_module 5a402aa6c3e0b1fa690d517510ae2c6151497b4c
 - headers_more_nginx_module d6d7ebab3c0c5b32ab421ba186783d3e5d2c6a17
 - lua_nginx_module 65d87507489b31b86419b0fcecc1c75ce46d0ece
