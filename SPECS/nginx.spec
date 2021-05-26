@@ -100,7 +100,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.19.10
+Version: 1.21.0
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -603,6 +603,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed May 26 2021 Hiroaki Nakamura <hnakamur@gmail.com> - 1.21.0-1
+- 1.21.0
+
 * Wed Apr 14 2021 Hiroaki Nakamura <hnakamur@gmail.com> - 1.19.10-1
 - 1.19.10
 - echo_nginx_module 5a402aa6c3e0b1fa690d517510ae2c6151497b4c
