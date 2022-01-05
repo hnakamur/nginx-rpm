@@ -187,7 +187,7 @@ License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: zlib-devel
-BuildRequires: pcre2-devel
+BuildRequires: pcre-devel
 BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -289,6 +289,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./njs/nginx \
         --with-debug \
         %{?with_http2:--with-http_v2_module} \
+        --without-pcre2 \
         --with-cc-opt="%{optflags} $(pcre-config --cflags)%{?tcp_fast_open: -DTCP_FASTOPEN=23} -Wno-uninitialized -Wno-unused-variable" \
         $*
 make %{?_smp_mflags}
@@ -360,6 +361,7 @@ LUAJIT_INC=%{luajit_inc} LUAJIT_LIB=%{luajit_lib} \
         --add-dynamic-module=./ngx_upstream_jdomain \
         --add-dynamic-module=./njs/nginx \
         %{?with_http2:--with-http_v2_module} \
+        --without-pcre2 \
         --with-cc-opt="%{optflags} $(pcre-config --cflags) %{?tcp_fast_open: -DTCP_FASTOPEN=23} -Wno-uninitialized -Wno-unused-variable" \
         $*
 make %{?_smp_mflags}
@@ -609,7 +611,6 @@ fi
 %changelog
 * Wed Jan 05 2022 Hiroaki Nakamura <hnakamur@gmail.com> - 1.21.5-1
 - 1.21.5
-- Add pcre2-devel to BuildRequires and remove pcre-devel
 - Build njs as a dynamic module
 - echo_nginx_module 267d0e3e8c77b1a55bee9677299908eb34815146
 - headers_more_nginx_module a4a0686605161a6777d7d612d5aef79b9e7c13e0
