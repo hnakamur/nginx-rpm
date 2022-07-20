@@ -182,6 +182,7 @@ Patch19: ngx_cache_purge-select_response_type.patch
 Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
 Patch23: nginx-1.19.4-cache_manager.patch
+Patch24: njs-centos6-excess-precition.patch
 
 License: 2-clause BSD-like license
 
@@ -218,6 +219,10 @@ a mail proxy server.
 %patch20 -p1
 %patch21 -p1
 %patch23 -p1
+%if 0%{?rhel}  == 6
+%patch24 -p0
+%endif
+
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
