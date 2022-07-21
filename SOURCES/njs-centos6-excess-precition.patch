@@ -1,0 +1,11 @@
+--- njs/auto/types.orig 2022-07-20 11:13:06.915859153 +0900
++++ njs/auto/types      2022-07-20 16:39:41.482832067 +0900
+@@ -127,7 +127,7 @@
+ case $NJS_CC_NAME in
+
+     gcc)
+-        NJS_CFLAGS="$NJS_CFLAGS -fexcess-precision=standard"
++        #NJS_CFLAGS="$NJS_CFLAGS -fexcess-precision=standard"
+     ;;
+
+     clang)

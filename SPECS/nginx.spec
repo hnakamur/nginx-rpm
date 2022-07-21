@@ -4,19 +4,19 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.1.1p
+%define ngx_openssl_version 1.1.1q
 
 %define echo_nginx_module_commit f7952cb6be2e7dab8bc66fd3e1ce3b3f18778fc3
-%define headers_more_nginx_module_commit 91eb0db9ef9ac05c4c514b8f1fdf8a8170cc354e
-%define lua_nginx_module_commit b6d167cf1a93c0c885c28db5a439f2404874cb26
+%define headers_more_nginx_module_commit bea1be3bbf6af28f6aa8cf0c01c07ee1637e2bd0
+%define lua_nginx_module_commit 9b7bde2e7986d2150606e33e303c6bd1c40271a6
 %define lua_upstream_nginx_module_commit 43c358df4e7b321483beb70c4f5d5585900f8043
 %define memc_nginx_module_commit c507601211b971fc8b22ed2ce642c80b154791f6
 %define redis2_nginx_module_commit 7c979c71e6f6c97f3ad5be7fb7f50ae4f800d76b
 %define set_misc_nginx_module_commit 3ea21393340a22a6a4dc3f9c1e07b3aac26a5c56
 %define srcache_nginx_module_commit be22ac0dcd9245aadcaca3220da96a0c1a0285a7
-%define stream_lua_nginx_module_commit b7f403cbb5f4c73c6e494f4368322520d6854bc3
+%define stream_lua_nginx_module_commit 518e66b1293083b998977613830c00163f8c165c
 %define lua_resty_balancer_commit a7a8b625c6d79d203702709983b736137be2a9bd
-%define lua_resty_core_commit 3c3d0786d6e26282e76f39f4fe5577d316a47a09
+%define lua_resty_core_commit 09fad6b20bb41d51b2ac24b2b719ef3988934bd4
 %define lua_resty_dns_commit ada80c8712090a52e5180ac2b41d707890cf9106
 %define lua_resty_lock_commit 9dc550e56b6f3b1a2f1a31bb270a91813b5b6861
 %define lua_resty_lrucache_commit 2ab2624c841cbf04785cc6384c5e213933d3b5f2
@@ -55,7 +55,7 @@
 %define ngx_upstream_jdomain_commit a5a8e07f76cbe82b0792f8e3091e011c0c12f230
 %define lua_resty_woothee_commit 256e7ccbcc22d037936cd813e5964f41e5a5a885
 %define lua_resty_jump_consistent_hash_commit a01d2683bfe34cc4edaab7ecac7906d51dfbd125
-%define njs_commit a571dcaeabddc110d99301b2c0a7473cacd32af4
+%define njs_commit e1e4e64a3f493d62b7720a3df4be7a81b63433e1
 
 %define luajit_inc /usr/include/luajit-2.1
 %define luajit_lib /usr/lib64
@@ -101,7 +101,7 @@ Requires: systemd
 
 Summary: High performance web server
 Name: nginx
-Version: 1.23.0
+Version: 1.23.1
 Release: 1%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
@@ -182,6 +182,7 @@ Patch19: ngx_cache_purge-select_response_type.patch
 Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
 Patch23: nginx-1.19.4-cache_manager.patch
+Patch24: njs-centos6-excess-precition.patch
 
 License: 2-clause BSD-like license
 
@@ -218,6 +219,10 @@ a mail proxy server.
 %patch20 -p1
 %patch21 -p1
 %patch23 -p1
+%if 0%{?rhel}  == 6
+%patch24 -p0
+%endif
+
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -609,6 +614,59 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Jul 20 2022 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.1-1
+- 1.23.1
+- echo_nginx_module f7952cb6be2e7dab8bc66fd3e1ce3b3f18778fc3
+- headers_more_nginx_module bea1be3bbf6af28f6aa8cf0c01c07ee1637e2bd0
+- lua_nginx_module 9b7bde2e7986d2150606e33e303c6bd1c40271a6
+- lua_upstream_nginx_module 43c358df4e7b321483beb70c4f5d5585900f8043
+- memc_nginx_module c507601211b971fc8b22ed2ce642c80b154791f6
+- redis2_nginx_module 7c979c71e6f6c97f3ad5be7fb7f50ae4f800d76b
+- set_misc_nginx_module 3ea21393340a22a6a4dc3f9c1e07b3aac26a5c56
+- srcache_nginx_module be22ac0dcd9245aadcaca3220da96a0c1a0285a7
+- stream_lua_nginx_module 518e66b1293083b998977613830c00163f8c165c
+- lua_resty_balancer a7a8b625c6d79d203702709983b736137be2a9bd
+- lua_resty_core 09fad6b20bb41d51b2ac24b2b719ef3988934bd4
+- lua_resty_dns ada80c8712090a52e5180ac2b41d707890cf9106
+- lua_resty_lock 9dc550e56b6f3b1a2f1a31bb270a91813b5b6861
+- lua_resty_lrucache 2ab2624c841cbf04785cc6384c5e213933d3b5f2
+- lua_resty_limit_traffic fcce9ca9ee125c02e79acac186a4647e7ee5bafd
+- lua_resty_memcached aac4e1e80ebfe62644615f8820853ff98f7f1c37
+- lua_resty_memcached_shdict 32374a1a286506cf4cf9c18a8c1bf01bd1554c21
+- lua_resty_mysql 908521368e95a302d06430ed1772e3fdd1e86216
+- lua_resty_redis a581c50bb5e8d8a9986c46dd97b4065fbcd3e09a
+- lua_resty_shdict_simple 4d27246b16f86de49e6da8b8a6136cddfe7550b4
+- lua_resty_shell c9f7efdbe85d9856029986d6a8659fce3bec7515
+- lua_resty_signal ee4f0f355508a8e071d0d7c1333d559b91a6428e
+- lua_resty_string 78e5020229718c557484191c891a68097907d818
+- lua_resty_upload 73c89846e866bf5d0660ffa881df37fd63f04391
+- lua_resty_upstream_healthcheck 346f3a642b6717a26382e4032160aa766af0188c
+- lua_resty_websocket 9e907f9c89385aaa873629cad9da92562f306918
+- lua_resty_cookie 99be1005e38ce19ace54515272a2be1b9fdc5da2
+- lua_resty_openidc b07330120ffe54dd3fbeac247726b76d0f9dc793
+- lua_resty_session e6bf2630c90df7b3db35e859f0aa7e096af3e918
+- lua_resty_jwt b8b1f6e00be74565111e0cbbc40bc7d26367a646
+- lua_resty_hmac eb4e8399b7f610bdb1b79dcbbd218e2cd9b84ad5
+- lua_resty_http 2af9925acf5cbb5b387539cd4463552ebbd5efee
+- ngx_cache_purge 331fe43e8d9a3d1fa5e0c9fec7d3201d431a9177
+- nginx_rtmp_module 23e1873aa62acb58b7881eed2a501f5bf35b82e9
+- nginx_dav_ext_module f5e30888a256136d9c550bf1ada77d6ea78a48af
+- ngx_http_enhanced_memcached_module b58a4500db3c4ee274be54a18abc767219dcfd36
+- ngx_http_secure_download f379a1acf2a76f63431a12fa483d9e22e718400b
+- ngx_devel_kit b4642d6ca01011bd8cd30b253f5c3872b384fd21
+- nginx_sorted_querystring_module e5bbded07fd67e2977edc2bc145c45a7b3fc4d26
+- ngx_http_pipelog_module f59558ebf71c810ceff15d475deb98f15a0a19c9
+- nginx_http_shibboleth 86489a3d503e1bf038cd8e64594eb7c5b7346e3c
+- nginx_lua_saml_service_provider ae2c02dc4c56b11d7536d8f7b7d25ef152edf7c7
+- nginx_lua_session 9c5053a7c9d2e8748f1153193d598dcea16417f4
+- lua_ffi_zlib 1fb69ca505444097c82d2b72e87904f3ed923ae9
+- SLAXML 108970cbcb4370365e79c619b0f06099c9ec9754
+- ngx_http_geoip2_module cbaa35461c62a99d2577e6bae3273492502d8769
+- ngx_upstream_jdomain a5a8e07f76cbe82b0792f8e3091e011c0c12f230
+- lua_resty_woothee 256e7ccbcc22d037936cd813e5964f41e5a5a885
+- lua_resty_jump_consistent_hash a01d2683bfe34cc4edaab7ecac7906d51dfbd125
+- njs e1e4e64a3f493d62b7720a3df4be7a81b63433e1
+
 * Tue Jun 28 2022 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.0-1
 - 1.23.0
 - echo_nginx_module f7952cb6be2e7dab8bc66fd3e1ce3b3f18778fc3
