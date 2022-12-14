@@ -4,7 +4,7 @@
 %define nginx_group nginx
 %define nginx_loggroup adm
 
-%define ngx_openssl_version 1.1.1q
+%define ngx_openssl_version 1.1.1s
 
 %define echo_nginx_module_commit 054df94a075701bf29626fd8f666913b57c771e9
 %define headers_more_nginx_module_commit 33b646d69f39604d71342ee241633975aa122b35
@@ -102,7 +102,7 @@ Requires: systemd
 Summary: High performance web server
 Name: nginx
 Version: 1.23.3
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: nginx inc.
 URL: http://nginx.org/
 
@@ -614,6 +614,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Dec 14 2022 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.3-2
+- OpenSSL 1.1.1s
+
 * Wed Dec 14 2022 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.3-1
 - 1.23.3
 - echo_nginx_module 054df94a075701bf29626fd8f666913b57c771e9
