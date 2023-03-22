@@ -183,6 +183,7 @@ Patch20: nginx-1.11.2-ssl_cert_cb_yield.patch
 Patch21: ngx_upstream_jdomain-dynamic_module.patch
 Patch23: nginx-1.19.4-cache_manager.patch
 Patch24: njs-centos6-excess-precition.patch
+Patch25: nginx_ltsv_http_log.patch
 
 License: 2-clause BSD-like license
 
@@ -222,6 +223,7 @@ a mail proxy server.
 %if 0%{?rhel}  == 6
 %patch24 -p0
 %endif
+%patch25 -p1
 
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -614,6 +616,9 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+* Wed Mar 22 2023 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.3-4
+- Add nginx_ltsv_http_log.patch
+
 * Wed Feb 08 2023 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.3-3
 - OpenSSL 1.1.1t
 
