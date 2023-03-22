@@ -18,7 +18,7 @@ download_github_repo() {
   local commit
   case "$branch_or_commit_opt" in
   -b)
-    git clone --depth 1 -b ${branch_or_commit} https://github.com/${user}/${repo}.git > /dev/null 2>&1
+    git clone --depth 1 -b ${branch_or_commit} --recurse-submodules https://github.com/${user}/${repo}.git > /dev/null 2>&1
     commit=$(cd ${repo} && git rev-parse HEAD)
     rm -rf ${repo}/.git
     ;;
@@ -86,3 +86,4 @@ download_github_repo -b master e98cuenc/ngx_upstream_jdomain
 download_github_repo -b master woothee/lua-resty-woothee
 download_github_repo -b master ruoshan/lua-resty-jump-consistent-hash
 download_github_repo -b master nginx/njs
+download_github_repo -b master Kong/lua-resty-lmdb
