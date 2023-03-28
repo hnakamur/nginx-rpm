@@ -186,6 +186,7 @@ Patch21: ngx_upstream_jdomain-dynamic_module.patch
 Patch23: nginx-1.19.4-cache_manager.patch
 Patch24: njs-centos6-excess-precition.patch
 Patch25: nginx_ltsv_http_log.patch
+Patch26: avoid_redefinition_of_ngx_http_lua_co_ctx_t.patch
 
 License: 2-clause BSD-like license
 
@@ -226,6 +227,7 @@ a mail proxy server.
 %patch24 -p0
 %endif
 %patch25 -p1
+%patch26 -p1
 
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
@@ -673,6 +675,7 @@ fi
 - lua_resty_jump_consistent_hash a01d2683bfe34cc4edaab7ecac7906d51dfbd125
 - njs 2d896c0961d95040eded5cfa92c058fc824e1bbf
 - lua_resty_lmdb 89cd8e85586272bbbc67e7ddf4c03404658d59eb
+- Add avoid_redefinition_of_ngx_http_lua_co_ctx_t.patch
 
 * Wed Feb 08 2023 Hiroaki Nakamura <hnakamur@gmail.com> - 1.23.3-3
 - OpenSSL 1.1.1t
