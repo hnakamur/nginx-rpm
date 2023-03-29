@@ -1,0 +1,163 @@
+--- a/src/core/ngx_string.c
++++ b/src/core/ngx_string.c
+@@ -1959,6 +1959,59 @@
+ }
+ 
+ 
++uintptr_t
++ngx_escape_ltsv(u_char *dst, u_char *src, size_t size)
++{
++    u_char      ch;
++    ngx_uint_t  len;
++
++    if (dst == NULL) {
++        len = 0;
++
++        while (size) {
++            ch = *src++;
++
++            if (ch == '\n' || ch == '\t' || ch == '\\') {
++                len++;
++            }
++
++            size--;
++        }
++
++        return (uintptr_t) len;
++    }
++
++    while (size) {
++        ch = *src++;
++
++        if (ch == '\n' || ch == '\t' || ch == '\\') {
++            *dst++ = '\\';
++
++            switch (ch) {
++            case '\n':
++                *dst++ = 'n';
++                break;
++
++            case '\t':
++                *dst++ = 't';
++                break;
++
++            case '\\':
++                *dst++ = '\\';
++                break;
++            }
++
++        } else {
++            *dst++ = ch;
++        }
++
++        size--;
++    }
++
++    return (uintptr_t) dst;
++}
++
++
+ void
+ ngx_str_rbtree_insert_value(ngx_rbtree_node_t *temp,
+     ngx_rbtree_node_t *node, ngx_rbtree_node_t *sentinel)
+--- a/src/core/ngx_string.h
++++ b/src/core/ngx_string.h
+@@ -212,6 +212,7 @@
+ void ngx_unescape_uri(u_char **dst, u_char **src, size_t size, ngx_uint_t type);
+ uintptr_t ngx_escape_html(u_char *dst, u_char *src, size_t size);
+ uintptr_t ngx_escape_json(u_char *dst, u_char *src, size_t size);
++uintptr_t ngx_escape_ltsv(u_char *dst, u_char *src, size_t size);
+ 
+ 
+ typedef struct {
+--- a/src/http/modules/ngx_http_log_module.c
++++ b/src/http/modules/ngx_http_log_module.c
+@@ -93,6 +93,7 @@
+ #define NGX_HTTP_LOG_ESCAPE_DEFAULT  0
+ #define NGX_HTTP_LOG_ESCAPE_JSON     1
+ #define NGX_HTTP_LOG_ESCAPE_NONE     2
++#define NGX_HTTP_LOG_ESCAPE_LTSV     3
+ 
+ 
+ static void ngx_http_log_write(ngx_http_request_t *r, ngx_http_log_t *log,
+@@ -141,6 +142,10 @@
+     uintptr_t data);
+ static u_char *ngx_http_log_json_variable(ngx_http_request_t *r, u_char *buf,
+     ngx_http_log_op_t *op);
++static size_t ngx_http_log_ltsv_variable_getlen(ngx_http_request_t *r,
++    uintptr_t data);
++static u_char *ngx_http_log_ltsv_variable(ngx_http_request_t *r, u_char *buf,
++    ngx_http_log_op_t *op);
+ static size_t ngx_http_log_unescaped_variable_getlen(ngx_http_request_t *r,
+     uintptr_t data);
+ static u_char *ngx_http_log_unescaped_variable(ngx_http_request_t *r,
+@@ -931,6 +936,11 @@
+         op->run = ngx_http_log_json_variable;
+         break;
+ 
++    case NGX_HTTP_LOG_ESCAPE_LTSV:
++        op->getlen = ngx_http_log_ltsv_variable_getlen;
++        op->run = ngx_http_log_ltsv_variable;
++        break;
++
+     case NGX_HTTP_LOG_ESCAPE_NONE:
+         op->getlen = ngx_http_log_unescaped_variable_getlen;
+         op->run = ngx_http_log_unescaped_variable;
+@@ -1090,6 +1100,47 @@
+ 
+ 
+ static size_t
++ngx_http_log_ltsv_variable_getlen(ngx_http_request_t *r, uintptr_t data)
++{
++    uintptr_t                   len;
++    ngx_http_variable_value_t  *value;
++
++    value = ngx_http_get_indexed_variable(r, data);
++
++    if (value == NULL || value->not_found) {
++        return 0;
++    }
++
++    len = ngx_escape_ltsv(NULL, value->data, value->len);
++
++    value->escape = len ? 1 : 0;
++
++    return value->len + len;
++}
++
++
++static u_char *
++ngx_http_log_ltsv_variable(ngx_http_request_t *r, u_char *buf,
++    ngx_http_log_op_t *op)
++{
++    ngx_http_variable_value_t  *value;
++
++    value = ngx_http_get_indexed_variable(r, op->data);
++
++    if (value == NULL || value->not_found) {
++        return buf;
++    }
++
++    if (value->escape == 0) {
++        return ngx_cpymem(buf, value->data, value->len);
++
++    } else {
++        return (u_char *) ngx_escape_ltsv(buf, value->data, value->len);
++    }
++}
++
++
++static size_t
+ ngx_http_log_unescaped_variable_getlen(ngx_http_request_t *r, uintptr_t data)
+ {
+     ngx_http_variable_value_t  *value;
+@@ -1601,6 +1652,9 @@
+         } else if (ngx_strcmp(data, "none") == 0) {
+             escape = NGX_HTTP_LOG_ESCAPE_NONE;
+ 
++        } else if (ngx_strcmp(data, "ltsv") == 0) {
++            escape = NGX_HTTP_LOG_ESCAPE_LTSV;
++
+         } else if (ngx_strcmp(data, "default") != 0) {
+             ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                                "unknown log format escaping \"%s\"", data);
