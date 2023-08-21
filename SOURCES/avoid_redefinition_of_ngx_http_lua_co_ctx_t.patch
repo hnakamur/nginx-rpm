@@ -1,9 +1,9 @@
 diff --git a/lua-nginx-module/src/api/ngx_http_lua_api.h b/lua-nginx-module/src/api/ngx_http_lua_api.h
-index 0181849..c3fa37d 100644
+index 640e0c3..e34ba1e 100644
 --- a/lua-nginx-module/src/api/ngx_http_lua_api.h
 +++ b/lua-nginx-module/src/api/ngx_http_lua_api.h
 @@ -22,7 +22,10 @@
- #define ngx_http_lua_version  10024
+ #define ngx_http_lua_version  10025
  
  
 +#ifndef NGX_HTTP_LUA_CO_CTX_T_DEFINED
@@ -14,7 +14,7 @@ index 0181849..c3fa37d 100644
  
  typedef struct {
 diff --git a/lua-nginx-module/src/ngx_http_lua_common.h b/lua-nginx-module/src/ngx_http_lua_common.h
-index d977ee8..3d2cd6f 100644
+index 7d9e10c..9fb0a3b 100644
 --- a/lua-nginx-module/src/ngx_http_lua_common.h
 +++ b/lua-nginx-module/src/ngx_http_lua_common.h
 @@ -157,7 +157,10 @@ typedef struct {
