@@ -622,8 +622,8 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
-* Mon Aug 21 2023 Hiroaki Nakamura <hnakamur@gmail.com> - 1.25.1-1
-- 1.25.1
+* Mon Aug 21 2023 Hiroaki Nakamura <hnakamur@gmail.com> - 1.25.2-1
+- 1.25.2
 - echo_nginx_module 7fddb5b082c6382dd15b6d8ddbf2ccb2a490aafd
 - headers_more_nginx_module 607d1b1f32abc3de5a26deeeb827de19c1e842b9
 - lua_nginx_module c89469e920713d17d703a5f3736c9335edac22bf
