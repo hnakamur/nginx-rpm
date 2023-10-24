@@ -201,6 +201,7 @@ BuildRequires: luajit-devel
 BuildRequires: mhash-devel
 BuildRequires: expat-devel
 BuildRequires: libmaxminddb-devel
+BuildRequires: perl-IPC-Cmd
 
 Provides: webserver
 
